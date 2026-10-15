@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>萌寵牧場 - Cozy Animal Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-sky: #c5f1fa;
+      --bg-grass-1: #aee274;
+      --bg-grass-2: #7fc344;
+      --ui-bg: rgba(255, 255, 255, 0.94);
+      --font-family: 'Fredoka', 'Quicksand', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-sky);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* 天空與背景雲層 */
+    .sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: linear-gradient(180deg, #8fe0fa 0%, #dcf4fc 80%, #aee274 100%);
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .sun {
+      position: absolute;
+      top: 25px;
+      right: 40px;
+      width: 70px;
+      height: 70px;
+      background: #ffd152;
+      border-radius: 50%;
+      box-shadow: 0 0 35px #ffb300;
+      animation: sun-glow 3.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes sun-glow {
+      0% { transform: scale(0.96); filter: drop-shadow(0 0 10px #ffd152); }
+      100% { transform: scale(1.05); filter: drop-shadow(0 0 25px #ffa834); }
+    }
+
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.9;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.06));
+      animation: float-cloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud-1 { width: 130px; height: 44px; top: 10%; left: -150px; animation-duration: 40s; }
+    .cloud-1::before { width: 55px; height: 55px; top: -25px; left: 20px; }
+    .cloud-1::after { width: 40px; height: 40px; top: -16px; left: 65px; }
+
+    .cloud-2 { width: 170px; height: 52px; top: 22%; left: -200px; animation-duration: 54s; animation-delay: 14s; }
+    .cloud-2::before { width: 70px; height: 70px; top: -32px; left: 32px; }
+    .cloud-2::after { width: 52px; height: 52px; top: -20px; left: 88px; }
+
+    @keyframes float-cloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(100vw + 240px)); }
+    }
+
+    /* 頂部導航與倉庫清單 */
+    .top-bar {
+      position: absolute;
+      top: 14px;
+      left: 18px;
+      right: 18px;
+      z-index: 30;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .farm-title {
+      background: var(--ui-bg);
+      backdrop-filter: blur(8px);
+      padding: 10px 20px;
+      border-radius: 28px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      font-size: 19px;
+      font-weight: 700;
+      color: #2e4a1f;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+      border: 3px solid #ffffff;
+    }
+
+    /* 產物倉庫看板 */
+    .barn-inventory {
+      background: var(--ui-bg);
+      backdrop-filter: blur(8px);
+      padding: 6px 16px;
+      border-radius: 26px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+      border: 3px solid #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      pointer-events: auto;
+    }
+
+    .inventory-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #3b5228;
+    }
+
+    .inventory-item span.icon {
+      font-size: 20px;
+    }
+
+    /* 草原與圍欄 */
+    .pasture {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: radial-gradient(circle at 50% 15%, var(--bg-grass-1) 0%, var(--bg-grass-2) 100%);
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    /* 木質圍欄 */
+    .fence-container {
+      position: absolute;
+      top: 5%;
+      left: -2%;
+      width: 104%;
+      height: 70px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 3;
+    }
+
+    .fence-post {
+      position: relative;
+      width: 16px;
+      height: 68px;
+      background: linear-gradient(90deg, #d3955f 0%, #a86c3d 100%);
+      border-radius: 3px 3px 1px 1px;
+      box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.12);
+    }
+    .fence-post::before {
+      content: '';
+      position: absolute;
+      top: -8px;
+      left: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 8px solid #d3955f;
+    }
+
+    .fence-rail {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 10px;
+      background: linear-gradient(180deg, #c78953 0%, #995f32 100%);
+    }
+    .fence-rail.upper { top: 15px; }
+    .fence-rail.lower { top: 40px; }
+
+    /* 動物活動互動場地 */
+    .farm-field {
+      position: absolute;
+      top: 14%;
+      bottom: 120px;
+      left: 4%;
+      right: 4%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 4;
+    }
+
+    /* 動物實體容器 */
+    .animal-pod {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      width: 29%;
+      max-width: 270px;
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .animal-pod:hover {
+      transform: scale(1.05);
+    }
+
+    /* ========================================================
+       小動物待機動畫 (IDLE ANIMATION)
+       ======================================================== */
+    /* 1. 乳牛：悠閒上下呼吸，耳朵擺動 */
+    #pod-cow .animal-graphic {
+      animation: cow-breathe 3.2s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+    #pod-cow .cow-ear-left {
+      animation: cow-ear-twitch 4s ease-in-out infinite;
+      transform-origin: 32px 48px;
+    }
+    #pod-cow .cow-ear-right {
+      animation: cow-ear-twitch 4s ease-in-out infinite 0.2s;
+      transform-origin: 128px 48px;
+    }
+
+    @keyframes cow-breathe {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      50% { transform: translateY(-7px) scale(1.02, 0.98); }
+    }
+    @keyframes cow-ear-twitch {
+      0%, 90%, 100% { transform: rotate(-20deg); }
+      93% { transform: rotate(-35deg); }
+      96% { transform: rotate(-15deg); }
+    }
+
+    /* 2. 小雞：輕快微跳、翅膀定時拍動 */
+    #pod-chicken .animal-graphic {
+      animation: chicken-hop 2.2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+      transform-origin: bottom center;
+    }
+    #chicken-wing-left {
+      animation: flap-wing 1.6s ease-in-out infinite;
+      transform-origin: 48px 80px;
+    }
+    #chicken-wing-right {
+      animation: flap-wing-right 1.6s ease-in-out infinite;
+      transform-origin: 104px 80px;
+    }
+
+    @keyframes chicken-hop {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      40% { transform: translateY(0) scale(1.04, 0.95); }
+      50% { transform: translateY(-14px) scale(0.96, 1.05); }
+      60% { transform: translateY(0) scale(1.02, 0.97); }
+    }
+    @keyframes flap-wing {
+      0%, 100% { transform: rotate(15deg); }
+      50% { transform: rotate(38deg); }
+    }
+    @keyframes flap-wing-right {
+      0%, 100% { transform: rotate(-15deg); }
+      50% { transform: rotate(-38deg); }
+    }
+
+    /* 3. 綿羊：軟綿綿毛球彈動 */
+    #pod-sheep .animal-graphic {
+      animation: sheep-puff 3.6s ease-in-out infinite;
+      transform-origin: bottom center;
+    }
+
+    @keyframes sheep-puff {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      50% { transform: translateY(-8px) scale(1.03, 0.97); }
+    }
+
+    /* 影子隨呼吸同步 */
+    #pod-cow .animal-shadow { animation: shadow-sync 3.2s ease-in-out infinite; }
+    #pod-chicken .animal-shadow { animation: shadow-sync 2.2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite; }
+    #pod-sheep .animal-shadow { animation: shadow-sync 3.6s ease-in-out infinite; }
+
+    @keyframes shadow-sync {
+      0%, 100% { transform: scale(1); opacity: 0.32; }
+      50% { transform: scale(0.85); opacity: 0.18; }
+    }
+
+    /* 餵食中的咀嚼動作 */
+    .animal-pod.eating .animal-graphic {
+      animation: chewing 0.35s ease-in-out 3 !important;
+    }
+    @keyframes chewing {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.08, 0.92) translateY(5px); }
+    }
+
+    /* 對話氣泡 */
+    .speech-bubble {
+      position: absolute;
+      top: -38px;
+      background: white;
+      padding: 5px 12px;
+      border-radius: 18px;
+      font-size: 13px;
+      font-weight: 700;
+      color: #3f3f3f;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 50%;
+      transform: translateX(-50%);
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid white;
+    }
+    .speech-bubble.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .animal-shadow {
+      width: 130px;
+      height: 22px;
+      background: rgba(35, 66, 12, 0.35);
+      border-radius: 50%;
+      margin-top: -10px;
+    }
+
+    /* 經驗值與等級牌 */
+    .status-card {
+      margin-top: 10px;
+      background: var(--ui-bg);
+      backdrop-filter: blur(6px);
+      padding: 8px 14px;
+      border-radius: 16px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      border: 2px solid white;
+    }
+
+    .animal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+
+    .animal-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #2b3a1d;
+    }
+
+    .badge-level {
+      background: #ff6b4a;
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 10px;
+    }
+
+    .exp-bar-wrap {
+      width: 100%;
+      height: 10px;
+      background: #e1e8d3;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .exp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffca28 0%, #ff8f00 100%);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .exp-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #687358;
+      margin-top: 3px;
+    }
+
+    /* 飾品 */
+    .accessory {
+      opacity: 0;
+      transform: scale(0.4);
+      transform-origin: center;
+      transition: all 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+    .accessory.unlocked {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* ========================================================
+       農場掉落產物特效 (DROPPED PRODUCT)
+       ======================================================== */
+    .dropped-product {
+      position: absolute;
+      width: 44px;
+      height: 44px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-size: 26px;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+      border: 3px solid #ffea79;
+      cursor: pointer;
+      z-index: 50;
+      animation: drop-bounce 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulse-glow 1.2s infinite alternate;
+    }
+
+    @keyframes drop-bounce {
+      0% { transform: translateY(-70px) scale(0.3); opacity: 0; }
+      50% { transform: translateY(12px) scale(1.18); opacity: 1; }
+      75% { transform: translateY(-8px) scale(0.95); }
+      100% { transform: translateY(0) scale(1); }
+    }
+
+    @keyframes pulse-glow {
+      0% { box-shadow: 0 0 6px #ffea79; }
+      100% { box-shadow: 0 0 16px #ff9800; }
+    }
+
+    .dropped-product:hover {
+      transform: scale(1.15);
+    }
+
+    /* 收集飛入倉庫動畫 */
+    .flying-to-inventory {
+      transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1) !important;
+      opacity: 0.9;
+      transform: scale(0.6) !important;
+    }
+
+    /* 底部飼料切換工具列 */
+    .feed-dock {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ui-bg);
+      backdrop-filter: blur(12px);
+      padding: 10px 20px;
+      border-radius: 36px;
+      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      z-index: 30;
+      border: 3px solid white;
+    }
+
+    .dock-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #555;
+      padding-right: 6px;
+      border-right: 2px solid #ddd;
+    }
+
+    .feed-btn {
+      background: white;
+      border: 2px solid #eaeaea;
+      padding: 8px 14px;
+      border-radius: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-family);
+      font-size: 14px;
+      font-weight: 700;
+      color: #444;
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+    }
+
+    .feed-btn:hover {
+      background: #fdfaf0;
+      border-color: #ffd152;
+      transform: translateY(-2px);
+    }
+
+    .feed-btn.selected {
+      background: #ffd54f;
+      border-color: #ffaa00;
+      color: #4e3200;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(255, 170, 0, 0.35);
+    }
+
+    /* 浮動經驗與升級粒子 */
+    .floating-item {
+      position: absolute;
+      pointer-events: none;
+      font-weight: 700;
+      font-size: 17px;
+      color: #ff7300;
+      text-shadow: 0 1px 3px white;
+      animation: float-up 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+      z-index: 45;
+    }
+
+    @keyframes float-up {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+      30% { opacity: 1; transform: translate(-50%, -20px) scale(1.1); }
+      100% { opacity: 0; transform: translate(-50%, -60px) scale(0.9); }
+    }
+
+    .confetti {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      pointer-events: none;
+      z-index: 60;
+      animation: confetti-fall 1.3s ease-out forwards;
+    }
+
+    @keyframes confetti-fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110px) rotate(600deg); opacity: 0; }
+    }
+
+    @media (max-width: 768px) {
+      .top-bar { flex-direction: column; gap: 8px; align-items: stretch; }
+      .barn-inventory { justify-content: space-around; }
+      .farm-field { top: 18%; }
+      .animal-pod { width: 31%; }
+      .dock-title { display: none; }
+      .feed-btn { padding: 6px 8px; font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 天空背景 -->
+  <div class="sky">
+    <div class="sun"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+  </div>
+
+  <!-- 頂部資訊與產物倉庫 -->
+  <header class="top-bar">
+    <div class="farm-title">
+      <span>🐮 快樂萌寵牧場</span>
+    </div>
+
+    <!-- 農場產物倉庫 -->
+    <div class="barn-inventory" id="barn-inventory">
+      <div class="inventory-item" title="乳牛生產的純鮮奶">
+        <span class="icon">🥛</span>
+        <span>牛奶: <b id="inv-milk">0</b></span>
+      </div>
+      <div class="inventory-item" title="小雞生產的優質蛋">
+        <span class="icon">🥚</span>
+        <span>雞蛋: <b id="inv-egg">0</b></span>
+      </div>
+      <div class="inventory-item" title="綿羊掉
