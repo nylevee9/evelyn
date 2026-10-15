@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>🌸 萌萌動物農場 | Cute Animal Farm</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Maru-gothic / Quicksand style -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;700;800;900&family=Quicksand:wght@600;700&display=swap" rel="stylesheet">
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <style>
+    body {
+      font-family: 'M PLUS Rounded 1c', 'Quicksand', -apple-system, sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+
+    /* Keyframe Animations */
+    @keyframes floatClouds {
+      0% { transform: translateX(-120%); }
+      100% { transform: translateX(120vw); }
+    }
+    @keyframes floatCloudSlow {
+      0% { transform: translateX(-80%); }
+      100% { transform: translateX(110vw); }
+    }
+    @keyframes butterflyFly {
+      0%, 100% { transform: translate(0, 0) scale(1) rotate(5deg); }
+      25% { transform: translate(60px, -40px) scale(0.9) rotate(-10deg); }
+      50% { transform: translate(120px, 10px) scale(1.05) rotate(15deg); }
+      75% { transform: translate(40px, -20px) scale(0.95) rotate(-5deg); }
+    }
+    @keyframes chewCow {
+      0%, 100% { transform: rotate(0deg) translateY(0); }
+      25% { transform: rotate(-2deg) translateY(-2px); }
+      75% { transform: rotate(2deg) translateY(1px); }
+    }
+    @keyframes peckChicken {
+      0%, 100% { transform: rotate(0deg); }
+      40% { transform: rotate(-18deg) translateY(6px); }
+      50% { transform: rotate(-22deg) translateY(8px); }
+      60% { transform: rotate(0deg); }
+    }
+    @keyframes bounceSheep {
+      0%, 100% { transform: translateY(0) scale(1, 1); }
+      50% { transform: translateY(-12px) scale(0.96, 1.05); }
+      70% { transform: translateY(0) scale(1.04, 0.95); }
+    }
+    @keyframes pulseScale {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+    @keyframes popBubble {
+      0% { transform: scale(0.4) translateY(10px); opacity: 0; }
+      20% { transform: scale(1.08) translateY(-4px); opacity: 1; }
+      80% { transform: scale(1) translateY(0); opacity: 1; }
+      100% { transform: scale(0.7) translateY(-20px); opacity: 0; }
+    }
+    @keyframes floatUpFade {
+      0% { opacity: 0; transform: translateY(0) scale(0.6); }
+      20% { opacity: 1; transform: translateY(-15px) scale(1.2); }
+      100% { opacity: 0; transform: translateY(-55px) scale(1); }
+    }
+    @keyframes shineRotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    @keyframes wingFlap {
+      0%, 100% { transform: rotate(0deg); }
+      50% { transform: rotate(25deg); }
+    }
+
+    .anim-cloud-1 { animation: floatClouds 48s linear infinite; }
+    .anim-cloud-2 { animation: floatCloudSlow 65s linear infinite 12s; }
+    .anim-cloud-3 { animation: floatClouds 55s linear infinite 28s; }
+    .anim-butterfly { animation: butterflyFly 14s ease-in-out infinite; }
+    
+    .cow-motion { animation: chewCow 3.2s ease-in-out infinite; transform-origin: bottom center; }
+    .chicken-motion { animation: peckChicken 2.8s ease-in-out infinite; transform-origin: bottom center; }
+    .sheep-motion { animation: bounceSheep 2.4s cubic-bezier(0.28, 0.84, 0.42, 1) infinite; transform-origin: bottom center; }
+    
+    .bubble-popup { animation: popBubble 3.2s forwards ease; }
+    .floating-exp { animation: floatUpFade 1.3s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+    .aura-spin { animation: shineRotate 12s linear infinite; }
+    .wing-flap { animation: wingFlap 0.4s ease-in-out infinite alternate; transform-origin: top left; }
+
+    /* Custom Grass & Texture */
+    .pasture-hill-1 {
+      background: radial-gradient(ellipse at 50% 10%, #a7f3d0 0%, #34d399 55%, #10b981 100%);
+    }
+    .pasture-hill-2 {
+      background: radial-gradient(ellipse at 50% 20%, #86efac 0%, #22c55e 65%, #16a34a 100%);
+    }
+
+    /* Wooden plank styling */
+    .wood-texture {
+      background: linear-gradient(180deg, #d97706 0%, #b45309 60%, #92400e 100%);
+      box-shadow: inset 0 2px 0 rgba(255,255,255,0.25), 0 3px 6px rgba(0,0,0,0.18);
+    }
+    .wood-post {
+      background: linear-gradient(90deg, #b45309 0%, #d97706 45%, #92400e 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.3), 0 4px 6px rgba(0,0,0,0.15);
+    }
+  </style>
+</head>
+<body class="bg-sky-200 min-h-screen flex flex-col items-center justify-between overflow-x-hidden relative select-none">
+
+  <!-- ================= TOP HEADER & RESOURCE BAR ================= -->
+  <header class="w-full max-w-5xl px-4 pt-3 pb-2 z-30 flex flex-wrap items-center justify-between gap-2">
+    <!-- Farm Title & Level badge -->
+    <div class="flex items-center space-x-2 bg-white/90 backdrop-blur-md px-4 py-2 rounded-2xl shadow-md border-2 border-amber-300">
+      <span class="text-2xl animate-bounce">🏡</span>
+      <div>
+        <h1 class="text-lg md:text-xl font-black text-amber-900 tracking-wide flex items-center gap-1.5">
+          萌萌動物農場
+          <span class="text-xs bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full border border-amber-300">GitHub Pages</span>
+        </h1>
+        <p class="text-xs text-amber-700 font-semibold">點擊或選取飼料餵食，伴牠們茁壯成長！</p>
+      </div>
+    </div>
+
+    <!-- Currency & Resources & Sound -->
+    <div class="flex items-center gap-2">
+      <!-- Coins -->
+      <div class="flex items-center gap-1.5 bg-amber-50/95 backdrop-blur-md px-3.5 py-1.5 rounded-2xl border-2 border-amber-400 shadow-sm">
+        <span class="text-xl">🪙</span>
+        <span id="coin-counter" class="font-black text-amber-900 text-base md:text-lg">150</span>
+      </div>
+
+      <!-- Harvest Basket / Silo -->
+      <button id="silo-btn" onclick="openHarvestModal()" class="flex items-center gap-1 bg-gradient-to-b from-rose-400 to-rose-500 hover:from-rose-500 hover:to-rose-600 active:scale-95 text-white font-extrabold px-3.5 py-1.5 rounded-2xl shadow-md border-b-4 border-rose-700 transition">
+        <span>🧺 產物倉</span>
+        <span id="harvest-badge" class="bg-yellow-300 text-yellow-950 font-black text-xs px-1.5 py-0.5 rounded-full ml-1">0</span>
+      </button>
+
+      <!-- Audio Toggle -->
+      <button id="sound-btn" onclick="toggleAudio()" class="w-10 h-10 rounded-2xl bg-white/90 border-2 border-amber-300 shadow-sm flex items-center justify-center text-lg active:scale-90 transition">
+        🔊
+      </button>
+    </div>
+  </header>
+
+  <!-- ================= FARM SKY & SCENERY BACKGROUND ================= -->
+  <div class="absolute inset-0 overflow-hidden pointer-events-none z-0">
+    <!-- Gentle Sun -->
+    <div class="absolute top-4 right-10 w-24 h-24 rounded-full bg-gradient-to-tr from-yellow-300 to-amber-200 opacity-90 shadow-2xl flex items-center justify-center">
+      <div class="w-16 h-16 rounded-full bg-yellow-200/60 animate-ping"></div>
+    </div>
+
+    <!-- Fluffy Clouds -->
+    <div class="absolute top-8 left-0 anim-cloud-1 opacity-80">
+      <svg width="140" height="70" viewBox="0 0 100 50" fill="white">
+        <path d="M 20 40 A 20 20 0 0 1 50 20 A 25 25 0 0 1 80 40 Z" />
+        <circle cx="30" cy="35" r="18" fill="white"/>
+        <circle cx="65" cy="35" r="16" fill="white"/>
+      </svg>
+    </div>
+    <div class="absolute top-20 left-0 anim-cloud-2 opacity-75">
+      <svg width="180" height="90" viewBox="0 0 100 50" fill="white">
+        <path d="M 15 40 A 22 22 0 0 1 55 20 A 28 28 0 0 1 88 40 Z" />
+        <circle cx="28" cy="35" r="18" fill="white"/>
+        <circle cx="70" cy="35" r="18" fill="white"/>
+      </svg>
+    </div>
+    <div class="absolute top-36 left-0 anim-cloud-3 opacity-60">
+      <svg width="110" height="55" viewBox="0 0 100 50" fill="white">
+        <circle cx="35" cy="32" r="18" fill="white"/>
+        <circle cx="65" cy="32" r="16" fill="white"/>
+      </svg>
+    </div>
+
+    <!-- Distant Red Barn House -->
+    <div class="absolute top-24 left-6 md:left-24 w-32 md:w-44 z-0 opacity-90">
+      <svg viewBox="0 0 120 100" class="w-full drop-shadow-md">
+        <!-- Roof -->
+        <polygon points="60,10 10,48 110,48" fill="#dc2626"/>
+        <polygon points="60,14 16,48 104,48" fill="#ef4444"/>
+        <!-- Barn Wall -->
+        <rect x="20" y="48" width="80" height="50" fill="#b91c1c"/>
+        <rect x="22" y="50" width="76" height="46" fill="#dc2626"/>
+        <!-- Cross White Wood Frame -->
+        <line x1="24" y1="52" x2="96" y2="94" stroke="#fee2e2" stroke-width="3"/>
+        <line x1="24" y1="94" x2="96" y2="52" stroke="#fee2e2" stroke-width="3"/>
+        <rect x="42" y="65" width="36" height="33" fill="#7f1d1d" rx="2"/>
+        <!-- Weathervane -->
+        <line x1="60" y1="2" x2="60" y2="10" stroke="#78350f" stroke-width="2"/>
+        <polygon points="60,2 66,5 60,8" fill="#f59e0b"/>
+      </svg>
+    </div>
+
+    <!-- Butterflies -->
+    <div class="absolute top-44 left-1/3 anim-butterfly z-10">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="#ec4899">
+        <path d="M12 12 C8 6, 2 8, 4 14 C6 18, 12 14, 12 12 Z M12 12 C16 6, 22 8, 20 14 C18 18, 12 14, 12 12 Z" />
+      </svg>
+    </div>
+  </div>
+
+  <!-- ================= MAIN PASTURE & FENCED ENCLOSURE ================= -->
+  <main class="w-full max-w-5xl px-3 md:px-6 my-auto z-10 flex flex-col items-center">
+    
+    <!-- Big Meadow Container with Hillside Gradient & Fence Enclosure -->
+    <div class="w-full relative rounded-3xl md:rounded-[2.5rem] p-4 md:p-8 pt-10 md:pt-14 shadow-2xl overflow-hidden border-4 border-emerald-300/80 bg-gradient-to-b from-emerald-300 via-green-400 to-emerald-600 min-h-[460px] md:min-h-[520px] flex flex-col justify-between">
+      
+      <!-- Lush Hills Curves in Meadow -->
+      <div class="absolute -top-16 -left-20 w-[120%] h-48 rounded-[50%] bg-emerald-200/50 pointer-events-none"></div>
+      <div class="absolute top-1/3 -right-24 w-[110%] h-60 rounded-[50%] bg-emerald-500/30 pointer-events-none"></div>
+
+      <!-- Cute Flowers and Clumps of Grass Scattered -->
+      <div class="absolute top-16 left-8 text-2xl select-none opacity-85">🌼</div>
+      <div class="absolute top-20 right-14 text-2xl select-none opacity-85">🌸</div>
+      <div class="absolute bottom-20 left-16 text-xl select-none opacity-80">🌷</div>
+      <div class="absolute bottom-14 right-20 text-2xl select-none opacity-85">🍀</div>
+      <div class="absolute top-1/2 left-4 text-emerald-200 font-extrabold select-none opacity-60">vvv</div>
+      <div class="absolute top-2/3 right-8 text-emerald-200 font-extrabold select-none opacity-60">vvv</div>
+
+      <!-- Wooden Fence (圍欄) Upper Rail -->
+      <div class="absolute top-3 left-4 right-4 h-5 wood-texture rounded-full z-0 flex items-center justify-between px-2">
+        <div class="w-4 h-8 wood-post rounded-sm -mt-1"></div>
+        <div class="w-4 h-8 wood-post rounded-sm -mt-1"></div>
+        <div class="w-4 h-8 wood-post rounded-sm -mt-1"></div>
+        <div class="w-4 h-8 wood-post rounded-sm -mt-1"></div>
+        <div class="w-4 h-8 wood-post rounded-sm -mt-1"></div>
+        <div class="w-4 h-8 wood-post rounded-sm -mt-1"></div>
+      </div>
+      <!-- Wooden Fence Lower Rail -->
+      <div class="absolute top-8 left-4 right-4 h-4 wood-texture rounded-full z-0"></div>
+
+      <!-- ================= ANIMALS PEN CONTAINER ================= -->
+      <div class="w-full grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-4 relative z-10 mt-6 items-end">
+        
+        <!-- 1. COW (乳牛) -->
+        <div id="cow-card" class="animal-card relative flex flex-col items-center group cursor-pointer transition transform active:scale-95 hover:scale-105" onclick="interactAnimal('cow')">
+          <!-- Dialogue bubble -->
+          <div id="cow-bubble" class="hidden absolute -top-12 bg-white/95 text-amber-900 border-2 border-amber-300 font-bold px-3 py-1.5 rounded-2xl shadow-md text-xs md:text-sm whitespace-nowrap z-20 pointer-events-none bubble-popup">
+            哞~ 主人我好幸福！🍼
+          </div>
+
+          <!-- Animal Avatar Canvas / SVG -->
+          <div class="relative w-44 h-44 flex items-center justify-center">
+            <!-- Sparkle Level Aura -->
+            <div id="cow-aura" class="hidden absolute inset-0 rounded-full border-4 border-dashed border-yellow-300/80 aura-spin pointer-events-none"></div>
+
+            <!-- SVG Cow -->
+            <svg viewBox="0 0 160 160" class="w-40 h-40 cow-motion drop-shadow-lg">
+              <!-- Shadow -->
+              <ellipse cx="80" cy="148" rx="55" ry="9" fill="rgba(6, 78, 59, 0.25)" />
+              
+              <!-- Back Legs & Hooves -->
+              <rect x="48" y="115" width="14" height="28" rx="6" fill="#e2e8f0" />
+              <rect x="48" y="137" width="14" height="7" rx="3" fill="#334155" />
+              <rect x="98" y="115" width="14" height="28" rx="6" fill="#e2e8f0" />
+              <rect x="98" y="137" width="14" height="7" rx="3" fill="#334155" />
+
+              <!-- Main Body -->
+              <ellipse cx="80" cy="105" rx="50" ry="36" fill="#ffffff" stroke="#cbd5e1" stroke-width="2.5" />
+              
+              <!-- Black Spots on Body -->
+              <path d="M 45 88 C 45 80, 60 76, 68 84 C 74 90, 68 102, 58 104 C 48 106, 43 96, 45 88 Z" fill="#1e293b"/>
+              <path d="M 104 98 C 100 90, 115 85, 122 92 C 128 98, 126 112, 118 114 C 110 116, 102 108, 104 98 Z" fill="#1e293b"/>
+              <circle cx="86" cy="120" r="8" fill="#1e293b"/>
+
+              <!-- Front Legs -->
+              <rect x="62" y="118" width="13" height="26" rx="6" fill="#f8fafc" />
+              <rect x="62" y="138" width="13" height="6" rx="3" fill="#1e293b" />
+              <rect x="85" y="118" width="13" height="26" rx="6" fill="#f8fafc" />
+              <rect x="85" y="138" width="13" height="6" rx="3" fill="#1e293b" />
+
+              <!-- Cow Ears -->
+              <ellipse cx="36" cy="55" rx="16" ry="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" transform="rotate(-25 36 55)" />
+              <ellipse cx="36" cy="55" rx="11" ry="5" fill="#f472b6" transform="rotate(-25 36 55)" />
+              <ellipse cx="124" cy="55" rx="16" ry="8" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" transform="rotate(25 124 55)" />
+              <ellipse cx="124" cy="55" rx="11" ry="5" fill="#f472b6" transform="rotate(25 124 55)" />
+
+              <!-- Horns -->
+              <polygon points="56,38 46,24 64,34" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" rx="3" />
+              <polygon points="104,38 114,24 96,34" fill="#fbbf24" stroke="#d97706" stroke-width="1.5" rx="3" />
+
+              <!-- Cow Head -->
+              <ellipse cx="80" cy="58" rx="34" ry="30" fill="#ffffff" stroke="#cbd5e1" stroke-width="2" />
+              <!-- Patch on Eye -->
+              <path d="M 52 46 C 52 38, 70 38, 72 48 C 74 58, 62 62, 54 58 Z" fill="#1e293b"/>
+
+              <!-- Eyes (Cute shiny cartoon eyes) -->
+              <ellipse cx="62" cy="52" rx="4.5" ry="5.5" fill="#0f172a" />
+              <circle cx="60.5" cy="50.5" r="1.8" fill="#ffffff" />
+              <ellipse cx="98" cy="52" rx="4.5" ry="5.5" fill="#0f172a" />
+              <circle cx="96.5" cy="50.5" r="1.8" fill="#ffffff" />
+
+              <!-- Big Pink Snout -->
+              <ellipse cx="80" cy="74" rx="26" ry="17" fill="#fbcfe8" stroke="#f472b6" stroke-width="2" />
+              <ellipse cx="71" cy="74" rx="3.5" ry="4.5" fill="#db2777" opacity="0.7"/>
+              <ellipse cx="89" cy="74" rx="3.5" ry="4.5" fill="#db2777" opacity="0.7"/>
+              <!-- Blushing cheeks -->
+              <circle cx="56" cy="65" r="5" fill="#fda4af" opacity="0.6" />
+              <circle cx="104" cy="65" r="5" fill="#fda4af" opacity="0.6" />
+
+              <!-- Collar with Bell -->
+              <path d="M 60 90 Q 80 98 100 90" stroke="#ef4444" stroke-width="4.5" fill="none" stroke-linecap="round"/>
+              <circle cx="80" cy="97" r="7" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+              <circle cx="80" cy="99" r="1.5" fill="#854d0e" />
+
+              <!-- Upgrade Level-Up Accessory Container (Default hidden, rendered via JS) -->
+              <g id="cow-accessory" class="hidden">
+                <!-- Level 2: Flower Crown / Level 3+: Royal Crown -->
+              </g>
+            </svg>
+          </div>
+
+          <!-- Animal Info Panel -->
+          <div class="w-full bg-white/90 backdrop-blur-sm p-3 rounded-2xl shadow-lg border-2 border-emerald-300 mt-1 flex flex-col items-center">
+            <div class="flex items-center justify-between w-full mb-1">
+              <span class="font-black text-slate-800 text-sm flex items-center gap-1">
+                🐄 花花乳牛
+                <span id="cow-product-icon" title="點擊領取牛奶" onclick="harvestProduct(event, 'cow')" class="cursor-pointer text-lg hover:scale-125 transition hidden animate-bounce">🥛</span>
+              </span>
+              <span id="cow-lvl-badge" class="bg-amber-400 text-amber-950 text-xs font-black px-2 py-0.5 rounded-full">Lv. 1</span>
+            </div>
+            <!-- EXP Bar -->
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300 relative">
+              <div id="cow-exp-bar" class="h-full bg-gradient-to-r from-emerald-400 to-green-500 rounded-full transition-all duration-300" style="width: 10%;"></div>
+            </div>
+            <div class="flex justify-between w-full text-[10px] text-slate-500 font-bold mt-1">
+              <span id="cow-exp-txt">EXP: 5 / 50</span>
+              <span id="cow-status-txt">產出: 純香牛奶</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. CHICKEN (咕咕雞) -->
+        <div id="chicken-card" class="animal-card relative flex flex-col items-center group cursor-pointer transition transform active:scale-95 hover:scale-105" onclick="interactAnimal('chicken')">
+          <!-- Dialogue bubble -->
+          <div id="chicken-bubble" class="hidden absolute -top-12 bg-white/95 text-amber-900 border-2 border-amber-300 font-bold px-3 py-1.5 rounded-2xl shadow-md text-xs md:text-sm whitespace-nowrap z-20 pointer-events-none bubble-popup">
+            咕咕噠！飼料真好吃~ 🥚
+          </div>
+
+          <!-- Animal Avatar Canvas / SVG -->
+          <div class="relative w-44 h-44 flex items-center justify-center">
+            <!-- Sparkle Level Aura -->
+            <div id="chicken-aura" class="hidden absolute inset-0 rounded-full border-4 border-dashed border-amber-300/80 aura-spin pointer-events-none"></div>
+
+            <!-- SVG Chicken -->
+            <svg viewBox="0 0 160 160" class="w-40 h-40 chicken-motion drop-shadow-lg">
+              <!-- Shadow -->
+              <ellipse cx="80" cy="146" rx="42" ry="7" fill="rgba(6, 78, 59, 0.25)" />
+
+              <!-- Legs / Feet -->
+              <line x1="70" y1="120" x2="68" y2="142" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+              <line x1="68" y1="142" x2="60" y2="145" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+              <line x1="68" y1="142" x2="74" y2="145" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+
+              <line x1="90" y1="120" x2="92" y2="142" stroke="#f59e0b" stroke-width="4" stroke-linecap="round"/>
+              <line x1="92" y1="142" x2="86" y2="145" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+              <line x1="92" y1="142" x2="100" y2="145" stroke="#f59e0b" stroke-width="3" stroke-linecap="round"/>
+
+              <!-- Chicken Fluffy Tail Feathers -->
+              <path d="M 40 92 C 22 75, 26 50, 48 70 C 26 56, 32 36, 56 60 Z" fill="#fef08a" stroke="#fde047" stroke-width="1.5"/>
+
+              <!-- Chicken Main Body (Fluffy Egg Shape) -->
+              <ellipse cx="82" cy="94" rx="42" ry="34" fill="#fef9c3" stroke="#fde047" stroke-width="2.5" />
+
+              <!-- Chicken Head -->
+              <circle cx="98" cy="62" r="26" fill="#fef9c3" stroke="#fde047" stroke-width="2.5" />
+
+              <!-- Flapping Wing -->
+              <g class="wing-flap">
+                <path d="M 64 88 C 60 76, 85 70, 92 84 C 94 94, 82 108, 68 102 C 62 100, 60 92, 64 88 Z" fill="#fef08a" stroke="#facc15" stroke-width="2" />
+              </g>
+
+              <!-- Red Comb on Head -->
+              <path d="M 90 40 C 88 30, 96 28, 100 36 C 104 26, 114 28, 112 38 C 118 32, 124 38, 120 46 Z" fill="#ef4444" />
+              
+              <!-- Wattle under Beak -->
+              <path d="M 116 75 C 122 78, 122 88, 116 88 C 112 88, 112 80, 116 75 Z" fill="#ef4444" />
+
+              <!-- Beak (Cute yellow cone) -->
+              <polygon points="115,62 135,69 115,75" fill="#f97316" stroke="#ea580c" stroke-width="1.5" />
+
+              <!-- Shiny Eye -->
+              <circle cx="106" cy="58" r="4.5" fill="#0f172a" />
+              <circle cx="104.5" cy="56.5" r="1.5" fill="#ffffff" />
+              <!-- Blush -->
+              <ellipse cx="98" cy="68" rx="5" ry="3.5" fill="#fda4af" opacity="0.7"/>
+
+              <!-- Upgrade Accessory -->
+              <g id="chicken-accessory" class="hidden"></g>
+            </svg>
+          </div>
+
+          <!-- Animal Info Panel -->
+          <div class="w-full bg-white/90 backdrop-blur-sm p-3 rounded-2xl shadow-lg border-2 border-emerald-300 mt-1 flex flex-col items-center">
+            <div class="flex items-center justify-between w-full mb-1">
+              <span class="font-black text-slate-800 text-sm flex items-center gap-1">
+                🐔 咕咕小雞
+                <span id="chicken-product-icon" title="點擊領取雞蛋" onclick="harvestProduct(event, 'chicken')" class="cursor-pointer text-lg hover:scale-125 transition hidden animate-bounce">🥚</span>
+              </span>
+              <span id="chicken-lvl-badge" class="bg-amber-400 text-amber-950 text-xs font-black px-2 py-0.5 rounded-full">Lv. 1</span>
+            </div>
+            <!-- EXP Bar -->
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300 relative">
+              <div id="chicken-exp-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full transition-all duration-300" style="width: 20%;"></div>
+            </div>
+            <div class="flex justify-between w-full text-[10px] text-slate-500 font-bold mt-1">
+              <span id="chicken-exp-txt">EXP: 8 / 40</span>
+              <span id="chicken-status-txt">產出: 金黃土雞蛋</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. SHEEP (綿羊) -->
+        <div id="sheep-card" class="animal-card relative flex flex-col items-center group cursor-pointer transition transform active:scale-95 hover:scale-105" onclick="interactAnimal('sheep')">
+          <!-- Dialogue bubble -->
+          <div id="sheep-bubble" class="hidden absolute -top-12 bg-white/95 text-amber-900 border-2 border-amber-300 font-bold px-3 py-1.5 rounded-2xl shadow-md text-xs md:text-sm whitespace-nowrap z-20 pointer-events-none bubble-popup">
+            咩~ 毛澎澎的好舒服！🧶
+          </div>
+
+          <!-- Animal Avatar Canvas / SVG -->
+          <div class="relative w-44 h-44 flex items-center justify-center">
+            <!-- Sparkle Level Aura -->
+            <div id="sheep-aura" class="hidden absolute inset-0 rounded-full border-4 border-dashed border-sky-300/80 aura-spin pointer-events-none"></div>
+
+            <!-- SVG Sheep -->
+            <svg viewBox="0 0 160 160" class="w-40 h-40 sheep-motion drop-shadow-lg">
+              <!-- Shadow -->
+              <ellipse cx="80" cy="148" rx="48" ry="8" fill="rgba(6, 78, 59, 0.25)" />
+
+              <!-- Legs -->
+              <rect x="52" y="118" width="12" height="25" rx="5" fill="#fed7aa" />
+              <rect x="52" y="138" width="12" height="6" rx="2" fill="#78350f" />
+              <rect x="96" y="118" width="12" height="25" rx="5" fill="#fed7aa" />
+              <rect x="96" y="138" width="12" height="6" rx="2" fill="#78350f" />
+              <rect x="68" y="122" width="12" height="22" rx="5" fill="#ffedd5" />
+              <rect x="68" y="139" width="12" height="5" rx="2" fill="#9a3412" />
+              <rect x="82" y="122" width="12" height="22" rx="5" fill="#ffedd5" />
+              <rect x="82" y="139" width="12" height="5" rx="2" fill="#9a3412" />
+
+              <!-- Fluffy Cloud Wool Body (Multi-bubbles) -->
+              <circle cx="56" cy="85" r="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+              <circle cx="80" cy="74" r="25" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+              <circle cx="106" cy="85" r="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+              <circle cx="64" cy="108" r="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+              <circle cx="96" cy="108" r="22" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+              <circle cx="80" cy="98" r="26" fill="#ffffff" />
+
+              <!-- Sheep Curled Horns -->
+              <path d="M 52 50 C 44 42, 34 50, 42 62 C 46 68, 56 64, 52 56" fill="none" stroke="#f59e0b" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M 108 50 C 116 42, 126 50, 118 62 C 114 68, 104 64, 108 56" fill="none" stroke="#f59e0b" stroke-width="4.5" stroke-linecap="round"/>
+
+              <!-- Sheep Face (Peach color) -->
+              <ellipse cx="80" cy="65" rx="23" ry="19" fill="#ffedd5" stroke="#fed7aa" stroke-width="2" />
+              
+              <!-- Curly Wool on Forehead -->
+              <circle cx="72" cy="50" r="8" fill="#ffffff"/>
+              <circle cx="86" cy="50" r="8" fill="#ffffff"/>
+              <circle cx="79" cy="45" r="9" fill="#ffffff"/>
+
+              <!-- Ears Drooping -->
+              <ellipse cx="54" cy="64" rx="9" ry="5" fill="#ffedd5" stroke="#fed7aa" stroke-width="1.5" transform="rotate(-20 54 64)"/>
+              <ellipse cx="106" cy="64" rx="9" ry="5" fill="#ffedd5" stroke="#fed7aa" stroke-width="1.5" transform="rotate(20 106 64)"/>
+
+              <!-- Cute Eyes (Curved happy eyes or shiny beads) -->
+              <circle cx="71" cy="63" r="3.5" fill="#334155"/>
+              <circle cx="70" cy="61.5" r="1.2" fill="#ffffff"/>
+              <circle cx="89" cy="63" r="3.5" fill="#334155"/>
+              <circle cx="88" cy="61.5" r="1.2" fill="#ffffff"/>
+
+              <!-- Little Sheep Mouth & Nose -->
+              <path d="M 77 71 Q 80 74 83 71" stroke="#ea580c" stroke-width="2" fill="none" stroke-linecap="round"/>
+              <ellipse cx="64" cy="68" rx="4" ry="2.5" fill="#fca5a5" opacity="0.7"/>
+              <ellipse cx="96" cy="68" rx="4" ry="2.5" fill="#fca5a5" opacity="0.7"/>
+
+              <!-- Upgrade Accessory -->
+              <g id="sheep-accessory" class="hidden"></g>
+            </svg>
+          </div>
+
+          <!-- Animal Info Panel -->
+          <div class="w-full bg-white/90 backdrop-blur-sm p-3 rounded-2xl shadow-lg border-2 border-emerald-300 mt-1 flex flex-col items-center">
+            <div class="flex items-center justify-between w-full mb-1">
+              <span class="font-black text-slate-800 text-sm flex items-center gap-1">
+                🐑 棉花綿羊
+                <span id="sheep-product-icon" title="點擊領取羊毛" onclick="harvestProduct(event, 'sheep')" class="cursor-pointer text-lg hover:scale-125 transition hidden animate-bounce">🧶</span>
+              </span>
+              <span id="sheep-lvl-badge" class="bg-amber-400 text-amber-950 text-xs font-black px-2 py-0.5 rounded-full">Lv. 1</span>
+            </div>
+            <!-- EXP Bar -->
+            <div class="w-full bg-slate-200 h-3 rounded-full overflow-hidden border border-slate-300 relative">
+              <div id="sheep-exp-bar" class="h-full bg-gradient-to-r from-sky-400 to-indigo-500 rounded-full transition-all duration-300" style="width: 15%;"></div>
+            </div>
+            <div class="flex justify-between w-full text-[10px] text-slate-500 font-bold mt-1">
+              <span id="sheep-exp-txt">EXP: 6 / 45</span>
+              <span id="sheep-status-txt">產出: 蓬鬆羊毛卷</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Wooden Fence Bottom Border Enclosure -->
+      <div class="w-full mt-4 flex items-center justify-between relative z-10 px-2 opacity-95">
+        <div class="h-4 w-full wood-texture rounded-full"></div>
+      </div>
+    </div>
+  </main>
+
+  <!-- ================= BOTTOM TOOLBAR: FEEDING & TOOLS ================= -->
+  <footer class="w-full max-w-4xl px-4 pb-5 pt-2 z-30">
+    <div class="bg-white/95 backdrop-blur-md rounded-3xl p-3 md:p-4 shadow-xl border-4 border-amber-300 flex flex-col sm:flex-row items-center justify-between gap-3">
+      
+      <!-- Selection Instructions -->
+      <div class="text-center sm:text-left">
+        <span class="text-xs md:text-sm font-extrabold text-amber-950 flex items-center justify-center sm:justify-start gap-1">
+          🥣 選擇美味飼料：
+        </span>
+        <p class="text-[11px] text-amber-700 font-bold hidden md:block">點選下方飼料後，點擊想餵食的可愛小動物！</p>
+      </div>
+
+      <!-- Feed / Food Options -->
+      <div class="flex items-center gap-2 md:gap-3 flex-wrap justify-center">
+        <!-- 1. Wheat / Hay (Wheat: cheap & cheerful) -->
+        <button id="feed-wheat" onclick="selectFood('wheat')" class="food-card active-food flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 border-amber-400 bg-amber-100/90 shadow-sm transition active:scale-95 font-black text-amber-900 text-xs md:text-sm ring-2 ring-amber-500">
+          <span class="text-2xl">🌾</span>
+          <div class="text-left">
+            <div>小麥草</div>
+            <div class="text-[10px] text-amber-700 font-bold">+10 EXP (免費)</div>
+          </div>
+        </button>
+
+        <!-- 2. Corn (Moderate boost) -->
+        <button id="feed-corn" onclick="selectFood('corn')" class="food-card flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 border-yellow-300 bg-white/80 hover:bg-yellow-50 shadow-sm transition active:scale-95 font-black text-amber-900 text-xs md:text-sm">
+          <span class="text-2xl">🌽</span>
+          <div class="text-left">
+            <div>甜玉米</div>
+            <div class="text-[10px] text-yellow-800 font-bold">+25 EXP (🪙10)</div>
+          </div>
+        </button>
+
+        <!-- 3. Lucky Clover (Big exp boost) -->
+        <button id="feed-clover" onclick="selectFood('clover')" class="food-card flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 border-emerald-300 bg-white/80 hover:bg-emerald-50 shadow-sm transition active:scale-95 font-black text-emerald-950 text-xs md:text-sm">
+          <span class="text-2xl">🍀</span>
+          <div class="text-left">
+            <div>幸運草</div>
+            <div class="text-[10px] text-emerald-700 font-bold">+60 EXP (🪙25)</div>
+          </div>
+        </button>
+
+        <!-- Quick Pet Action -->
+        <button onclick="feedAllLove()" title="愛心摸摸全體" class="flex items-center justify-center p-2.5 rounded-2xl bg-gradient-to-tr from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-extrabold shadow-md active:scale-90 transition">
+          <span class="text-xl">💖</span>
+        </button>
+      </div>
+
+    </div>
+  </footer>
+
+  <!-- ================= HARVEST / SILO MODAL ================= -->
+  <div id="harvest-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl border-4 border-amber-300 transform transition-all scale-100 flex flex-col items-center">
+      <div class="w-16 h-16 rounded-2xl bg-amber-100 border-2 border-amber-300 flex items-center justify-center text-3xl mb-3">
+        🧺
+      </div>
+      <h3 class="text-xl font-black text-amber-950 mb-1">農場產物倉庫</h3>
+      <p class="text-xs text-amber-800 font-semibold mb-4 text-center">動物們飽足後產出的農產品可在此出售，換取金幣購買高級飼料！</p>
+
+      <!-- Inventory list -->
+      <div class="w-full space-y-2 mb-5">
+        <div class="flex items-center justify-between p-3 bg-amber-50 rounded-2xl border border-amber-200">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🥛</span>
+            <span class="font-bold text-amber-950 text-sm">純香牛奶</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="silo-milk-qty" class="font-black text-amber-800">0 瓶</span>
+            <span class="text-xs bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full font-bold">25 🪙/瓶</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-3 bg-amber-50 rounded-2xl border border-amber-200">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🥚</span>
+            <span class="font-bold text-amber-950 text-sm">金黃土雞蛋</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="silo-egg-qty" class="font-black text-amber-800">0 顆</span>
+            <span class="text-xs bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full font-bold">15 🪙/顆</span>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between p-3 bg-amber-50 rounded-2xl border border-amber-200">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🧶</span>
+            <span class="font-bold text-amber-950 text-sm">蓬鬆羊毛卷</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span id="silo-wool-qty" class="font-black text-amber-800">0 捆</span>
+            <span class="text-xs bg-yellow-200 text-yellow-900 px-2 py-0.5 rounded-full font-bold">30 🪙/捆</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 w-full">
+        <button onclick="sellAllHarvest()" class="flex-1 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-black py-2.5 rounded-2xl shadow-md border-b-4 border-green-800 active:scale-95 transition">
+          全部變賣金幣 💰
+        </button>
+        <button onclick="closeHarvestModal()" class="px-5 py-2.5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-2xl active:scale-95 transition">
+          關閉
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= IN-GAME TOAST NOTIFICATION ================= -->
+  <div id="game-toast" class="fixed top-16 left-1/2 transform -translate-x-1/2 bg-amber-900/90 text-amber-100 font-bold px-4 py-2 rounded-2xl shadow-xl text-sm pointer-events-none opacity-0 transition-opacity duration-300 z-50 flex items-center gap-2">
+    <span id="toast-icon">✨</span>
+    <span id="toast-msg">金幣不足唷！</span>
+  </div>
+
+  <!-- ================= SCRIPT & GAME LOGIC ================= -->
+  <script>
+    /* ----------------------------------------------------
+       1. GAME STATE & ANIMAL DEFINITIONS
+    ---------------------------------------------------- */
+    let coins = 120;
+    let audioEnabled = true;
+    let selectedFood = 'wheat'; // 'wheat', 'corn', 'clover'
+
+    const foods = {
+      wheat: { name: '小麥草', exp: 12, cost: 0, icon: '🌾' },
+      corn: { name: '甜玉米', exp: 28, cost: 10, icon: '🌽' },
+      clover: { name: '幸運草', exp: 65, cost: 25, icon: '🍀' }
+    };
+
+    const animals = {
+      cow: {
+        name: '花花乳牛',
+        sound: 'cow',
+        level: 1,
+        exp: 8,
+        maxExp: 50,
+        product: 'milk',
+        productName: '牛奶',
+        productIcon: '🥛',
+        price: 25,
+        quotes: ['哞~ 飽飽好開心！🍼', '謝謝主人愛我！🌸', '這草太香脆了~', '哞！我要長高高~']
+      },
+      chicken: {
+        name: '咕咕小雞',
+        sound: 'chicken',
+        level: 1,
+        exp: 10,
+        maxExp: 40,
+        product: 'egg',
+        productName: '土雞蛋',
+        productIcon: '🥚',
+        price: 15,
+        quotes: ['咕咕噠！太好吃啦~ 🥚', '小翅膀拍拍拍！', '今日又是精力充沛的一天！', '再吃一口就生蛋！']
+      },
+      sheep: {
+        name: '棉花綿羊',
+        sound: 'sheep',
+        level: 1,
+        exp: 6,
+        maxExp: 45,
+        product: 'wool',
+        productName: '羊毛卷',
+        productIcon: '🧶',
+        price: 30,
+        quotes: ['咩~ 毛髮變得好柔軟！🧶', '跳跳跳，好輕盈！✨', '最喜歡跟主人玩了~', '咩！暖呼呼的好幸福！']
+      }
+    };
+
+    const inventory = {
+      milk: 1,
+      egg: 2,
+      wool: 1
+    };
+
+    /* ----------------------------------------------------
+       2. WEB AUDIO API SYNTHESIZER (No external audio files)
+    ---------------------------------------------------- */
+    let audioCtx = null;
+
+    function initAudio() {
+      if (!audioCtx) {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        audioCtx = new AudioContext();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function toggleAudio() {
+      audioEnabled = !audioEnabled;
+      const btn = document.getElementById('sound-btn');
+      btn.innerText = audioEnabled ? '🔊' : '🔇';
+      showToast(audioEnabled ? '🔊 音效已開啟' : '🔇 音效已靜音', '🎵');
+    }
+
+    // Play synthesized cute sound effects
+    function playCuteSound(type) {
+      if (!audioEnabled) return;
+      try {
+        initAudio();
+        const now = audioCtx.currentTime;
+
+        if (type === 'eat') {
+          // Cheerful crunchy pop sound
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, now);
+          osc.frequency.exponentialRampToValueAtTime(580, now + 0.08);
+          osc.frequency.exponentialRampToValueAtTime(180, now + 0.16);
+
+          gain.gain.setValueAtTime(0.35, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.16);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.17);
+        } else if (type === 'levelup') {
+          // Fanfare arpeggio chord
+          const notes = [440, 554.37, 659.25, 880];
+          notes.forEach((freq, idx) => {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.09);
+
+            gain.gain.setValueAtTime(0.28, now + idx * 0.09);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.09 + 0.35);
+
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start(now + idx * 0.09);
+            osc.stop(now + idx * 0.09 + 0.36);
+          });
+        } else if (type === 'coin') {
+          // Crisp high coin chime
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(987.77, now); // B5
+          osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
+
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.28);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'pop') {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(450, now);
+          osc.frequency.exponentialRampToValueAtTime(750, now + 0.08);
+
+          gain.gain.setValueAtTime(0.2, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.1);
+        }
+      } catch (err) {
+        console.warn('Audio playback error:', err);
+      }
+    }
+
+    /* ----------------------------------------------------
+       3. FEEDING & INTERACTION LOGIC
+    ---------------------------------------------------- */
+    function selectFood(foodKey) {
+      selectedFood = foodKey;
+      document.querySelectorAll('.food-card').forEach(card => {
+        card.classList.remove('active-food', 'ring-2', 'ring-amber-500', 'bg-amber-100/90');
+        card.classList.add('bg-white/80');
+      });
+      const activeBtn = document.getElementById(`feed-${foodKey}`);
+      activeBtn.classList.add('active-food', 'ring-2', 'ring-amber-500', 'bg-amber-100/90');
+      activeBtn.classList.remove('bg-white/80');
+      playCuteSound('pop');
+    }
+
+    function interactAnimal(key) {
+      const animal = animals[key];
+      const food = foods[selectedFood];
+
+      // Check coins
+      if (food.cost > coins) {
+        showToast(`金幣不足！需要 🪙${food.cost}`, '⚠️');
+        playCuteSound('pop');
+        return;
+      }
+
+      // Deduct coins if applicable
+      if (food.cost > 0) {
+        coins -= food.cost;
+        updateCoinDisplay();
+      }
+
+      // Add EXP
+      animal.exp += food.exp;
+      playCuteSound('eat');
+
+      // Visual feedback: Floating feed icon & EXP text
+      spawnFloatingText(key, `+${food.exp} EXP`, '#10b981');
+      spawnHeartParticles(key, food.icon);
+
+      // Check Level Up
+      if (animal.exp >= animal.maxExp) {
+        triggerLevelUp(key);
+      } else {
+        // Random cute quote
+        showSpeechBubble(key, getRandomQuote(animal.quotes));
+      }
+
+      // Chance to produce harvestable goods
+      if (Math.random() < 0.45) {
+        showProductBadge(key);
+      }
+
+      updateAnimalUI(key);
+    }
+
+    function triggerLevelUp(key) {
+      const animal = animals[key];
+      animal.level += 1;
+      animal.exp = animal.exp - animal.maxExp;
+      animal.maxExp = Math.round(animal.maxExp * 1.55);
+
+      playCuteSound('levelup');
+
+      // Confetti burst on screen
+      if (typeof confetti === 'function') {
+        confetti({
+          particleCount: 70,
+          spread: 60,
+          origin: { y: 0.6 }
+        });
+      }
+
+      showToast(`🎉 ${animal.name} 升級到 Lv. ${animal.level}！`, '👑');
+      showSpeechBubble(key, `哇！我升到 Lv.${animal.level} 了！好漂亮呀~ ✨`, 3500);
+
+      // Upgrade accessories styling & visuals based on Level
+      applyAnimalAccessories(key);
+      updateAnimalUI(key);
+    }
+
+    // Apply cute visual upgrades as they level up
+    function applyAnimalAccessories(key) {
+      const animal = animals[key];
+      const aura = document.getElementById(`${key}-aura`);
+      const accGroup = document.getElementById(`${key}-accessory`);
+
+      if (!accGroup) return;
+      accGroup.classList.remove('hidden');
+
+      if (key === 'cow') {
+        if (animal.level >= 2) {
+          // Lv 2: Flower headpiece
+          accGroup.innerHTML = `
+            <circle cx="56" cy="34" r="6" fill="#f43f5e" />
+            <circle cx="66" cy="32" r="5" fill="#fbbf24" />
+            <circle cx="60" cy="36" r="3" fill="#ffffff" />
+          `;
+        }
+        if (animal.level >= 3) {
+          // Lv 3+: Golden Crown & Aura
+          aura.classList.remove('hidden');
+          accGroup.innerHTML = `
+            <polygon points="68,26 72,14 78,22 84,14 88,26" fill="#facc15" stroke="#b45309" stroke-width="1.5" />
+            <circle cx="78" cy="20" r="2" fill="#ef4444" />
+          `;
+        }
+      } else if (key === 'chicken') {
+        if (animal.level >= 2) {
+          // Cute pink bow ribbon
+          accGroup.innerHTML = `
+            <path d="M 88 44 C 80 40 80 50 88 46 C 96 50 96 40 88 44 Z" fill="#ec4899" stroke="#be185d" stroke-width="1"/>
+            <circle cx="88" cy="45" r="2.5" fill="#f472b6"/>
+          `;
+        }
+        if (animal.level >= 3) {
+          aura.classList.remove('hidden');
+          // Golden star necklace & cool sunglasses
+          accGroup.innerHTML += `
+            <polygon points="106,62 108,58 112,62" fill="#0284c7" opacity="0.8"/>
+            <polygon points="98,24 102,14 108,22 114,14 118,24" fill="#fbbf24" stroke="#d97706" stroke-width="1.2" />
+          `;
+        }
+      } else if (key === 'sheep') {
+        if (animal.level >= 2) {
+          // Ribbon collar with tiny bell
+          accGroup.innerHTML = `
+            <circle cx="80" cy="84" r="5" fill="#38bdf8" />
+            <circle cx="80" cy="84" r="2" fill="#ffffff" />
+          `;
+        }
+        if (animal.level >= 3) {
+          aura.classList.remove('hidden');
+          // Golden crown & sparkle wreath
+          accGroup.innerHTML = `
+            <polygon points="70,36 75,24 80,32 85,24 90,36" fill="#facc15" stroke="#ca8a04" stroke-width="1.5" />
+            <circle cx="75" cy="42" r="3" fill="#ec4899" />
+            <circle cx="85" cy="42" r="3" fill="#a855f7" />
+          `;
+        }
+      }
+    }
+
+    // Give love to all animals (Pet all button)
+    function feedAllLove() {
+      playCuteSound('levelup');
+      ['cow', 'chicken', 'sheep'].forEach(key => {
+        animals[key].exp += 8;
+        spawnFloatingText(key, `+💖 喜愛`, '#ec4899');
+        spawnHeartParticles(key, '❤️');
+        if (animals[key].exp >= animals[key].maxExp) {
+          triggerLevelUp(key);
+        } else {
+          showSpeechBubble(key, '好舒服~ 最愛主人摸摸！🐾');
+        }
+        updateAnimalUI(key);
+      });
+      showToast('💖 動物們感到無比幸福！', '🌸');
+    }
+
+    /* ----------------------------------------------------
+       4. SPEECH BUBBLES & PARTICLES
+    ---------------------------------------------------- */
+    let bubbleTimers = {};
+
+    function showSpeechBubble(key, text, duration = 3000) {
+      const bubble = document.getElementById(`${key}-bubble`);
+      if (!bubble) return;
+      bubble.innerText = text;
+      bubble.classList.remove('hidden');
+      bubble.classList.remove('bubble-popup');
+      void bubble.offsetWidth; // trigger reflow
+      bubble.classList.add('bubble-popup');
+
+      clearTimeout(bubbleTimers[key]);
+      bubbleTimers[key] = setTimeout(() => {
+        bubble.classList.add('hidden');
+      }, duration);
+    }
+
+    function getRandomQuote(quotes) {
+      return quotes[Math.floor(Math.random() * quotes.length)];
+    }
+
+    function spawnFloatingText(animalKey, text, color) {
+      const card = document.getElementById(`${animalKey}-card`);
+      if (!card) return;
+
+      const floatEl = document.createElement('div');
+      floatEl.className = 'absolute font-black text-sm md:text-base pointer-events-none floating-exp z-30 drop-shadow-sm';
+      floatEl.style.color = color;
+      floatEl.style.left = `${45 + (Math.random() * 20 - 10)}%`;
+      floatEl.style.top = '35%';
+      floatEl.innerText = text;
+
+      card.appendChild(floatEl);
+      setTimeout(() => floatEl.remove(), 1300);
+    }
+
+    function spawnHeartParticles(animalKey, emoji) {
+      const card = document.getElementById(`${animalKey}-card`);
+      if (!card) return;
+
+      for (let i = 0; i < 3; i++) {
+        const heart = document.createElement('span');
+        heart.innerText = emoji;
+        heart.className = 'absolute text-lg pointer-events-none floating-exp z-30';
+        heart.style.left = `${35 + Math.random() * 30}%`;
+        heart.style.top = `${25 + Math.random() * 20}%`;
+        heart.style.animationDelay = `${i * 0.15}s`;
+
+        card.appendChild(heart);
+        setTimeout(() => heart.remove(), 1400);
+      }
+    }
+
+    /* ----------------------------------------------------
+       5. HARVEST & INVENTORY SILO
+    ---------------------------------------------------- */
+    function showProductBadge(key) {
+      const badge = document.getElementById(`${key}-product-icon`);
+      if (badge) badge.classList.remove('hidden');
+    }
+
+    function harvestProduct(event, key) {
+      event.stopPropagation(); // prevent triggering feeding
+      const animal = animals[key];
+      const prodType = animal.product;
+      inventory[prodType] = (inventory[prodType] || 0) + 1;
+
+      // Hide badge
+      const badge = document.getElementById(`${key}-product-icon`);
+      if (badge) badge.classList.add('hidden');
+
+      playCuteSound('coin');
+      spawnFloatingText(key, `+1 ${animal.productName} ${animal.productIcon}`, '#f59e0b');
+      showToast(`收穫了 1 份 ${animal.productName}！`, animal.productIcon);
+      updateHarvestBadge();
+    }
+
+    function updateHarvestBadge() {
+      const totalHarvest = inventory.milk + inventory.egg + inventory.wool;
+      document.getElementById('harvest-badge').innerText = totalHarvest;
+    }
+
+    function openHarvestModal() {
+      document.getElementById('silo-milk-qty').innerText = `${inventory.milk} 瓶`;
+      document.getElementById('silo-egg-qty').innerText = `${inventory.egg} 顆`;
+      document.getElementById('silo-wool-qty').innerText = `${inventory.wool} 捆`;
+      document.getElementById('harvest-modal').classList.remove('hidden');
+      playCuteSound('pop');
+    }
+
+    function closeHarvestModal() {
+      document.getElementById('harvest-modal').classList.add('hidden');
+    }
+
+    function sellAllHarvest() {
+      const earned = (inventory.milk * 25) + (inventory.egg * 15) + (inventory.wool * 30);
+      if (earned === 0) {
+        showToast('倉庫空空如也，沒有產物可賣唷！', '📦');
+        return;
+      }
+      coins += earned;
+      inventory.milk = 0;
+      inventory.egg = 0;
+      inventory.wool = 0;
+
+      updateCoinDisplay();
+      updateHarvestBadge();
+      closeHarvestModal();
+      playCuteSound('coin');
+      showToast(`全部售出！獲得 🪙${earned} 金幣！`, '💰');
+    }
+
+    /* ----------------------------------------------------
+       6. UI HELPERS & UPDATES
+    ---------------------------------------------------- */
+    function updateCoinDisplay() {
+      document.getElementById('coin-counter').innerText = coins;
+    }
+
+    function updateAnimalUI(key) {
+      const a = animals[key];
+      const expPct = Math.min(100, Math.round((a.exp / a.maxExp) * 100));
+
+      const bar = document.getElementById(`${key}-exp-bar`);
+      const txt = document.getElementById(`${key}-exp-txt`);
+      const badge = document.getElementById(`${key}-lvl-badge`);
+
+      if (bar) bar.style.width = `${expPct}%`;
+      if (txt) txt.innerText = `EXP: ${a.exp} / ${a.maxExp}`;
+      if (badge) badge.innerText = `Lv. ${a.level}`;
+    }
+
+    function showToast(message, icon = '✨') {
+      const toast = document.getElementById('game-toast');
+      document.getElementById('toast-icon').innerText = icon;
+      document.getElementById('toast-msg').innerText = message;
+      toast.classList.remove('opacity-0');
+      toast.classList.add('opacity-100');
+
+      clearTimeout(window.toastTimer);
+      window.toastTimer = setTimeout(() => {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0');
+      }, 2500);
+    }
+
+    // Initialize all animal UIs on window load
+    window.onload = function() {
+      Object.keys(animals).forEach(key => {
+        updateAnimalUI(key);
+      });
+      updateCoinDisplay();
+      updateHarvestBadge();
+    };
+  </script>
+</body>
+</html>
