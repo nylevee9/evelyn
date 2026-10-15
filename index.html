@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>萌寵牧場 - Cozy Animal Farm</title>
+  <title>陽光萌寵農場 - Cozy Animal Farm</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-sky: #c5f1fa;
-      --bg-grass-1: #aee274;
-      --bg-grass-2: #7fc344;
-      --ui-bg: rgba(255, 255, 255, 0.94);
+      --bg-sky: #c1efff;
+      --bg-grass-1: #9fe266;
+      --bg-grass-2: #72bf38;
+      --wood-light: #d89658;
+      --wood-dark: #a96831;
       --font-family: 'Fredoka', 'Quicksand', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
     }
 
@@ -34,14 +35,14 @@
       position: relative;
     }
 
-    /* 天空與背景雲層 */
+    /* 天空與雲朵 */
     .sky {
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
-      height: 50%;
-      background: linear-gradient(180deg, #8fe0fa 0%, #dcf4fc 80%, #aee274 100%);
+      height: 48%;
+      background: linear-gradient(180deg, #74d5fa 0%, #d8f6ff 85%, #9fe266 100%);
       z-index: 1;
       overflow: hidden;
     }
@@ -49,27 +50,26 @@
     .sun {
       position: absolute;
       top: 25px;
-      right: 40px;
+      right: 45px;
       width: 70px;
       height: 70px;
-      background: #ffd152;
+      background: #ffd339;
       border-radius: 50%;
       box-shadow: 0 0 35px #ffb300;
-      animation: sun-glow 3.5s ease-in-out infinite alternate;
+      animation: sun-pulse 4s infinite alternate ease-in-out;
     }
 
-    @keyframes sun-glow {
-      0% { transform: scale(0.96); filter: drop-shadow(0 0 10px #ffd152); }
-      100% { transform: scale(1.05); filter: drop-shadow(0 0 25px #ffa834); }
+    @keyframes sun-pulse {
+      0% { transform: scale(0.95); filter: drop-shadow(0 0 10px #ffd339); }
+      100% { transform: scale(1.06); filter: drop-shadow(0 0 25px #ff9e1f); }
     }
 
     .cloud {
       position: absolute;
       background: white;
       border-radius: 50px;
-      opacity: 0.9;
-      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.06));
-      animation: float-cloud linear infinite;
+      opacity: 0.92;
+      animation: cloud-pass linear infinite;
     }
     .cloud::before, .cloud::after {
       content: '';
@@ -77,20 +77,20 @@
       background: white;
       border-radius: 50%;
     }
-    .cloud-1 { width: 130px; height: 44px; top: 10%; left: -150px; animation-duration: 40s; }
-    .cloud-1::before { width: 55px; height: 55px; top: -25px; left: 20px; }
-    .cloud-1::after { width: 40px; height: 40px; top: -16px; left: 65px; }
+    .cloud-1 { width: 130px; height: 42px; top: 12%; left: -160px; animation-duration: 38s; }
+    .cloud-1::before { width: 55px; height: 55px; top: -25px; left: 18px; }
+    .cloud-1::after { width: 42px; height: 42px; top: -16px; left: 62px; }
 
-    .cloud-2 { width: 170px; height: 52px; top: 22%; left: -200px; animation-duration: 54s; animation-delay: 14s; }
-    .cloud-2::before { width: 70px; height: 70px; top: -32px; left: 32px; }
-    .cloud-2::after { width: 52px; height: 52px; top: -20px; left: 88px; }
+    .cloud-2 { width: 160px; height: 48px; top: 22%; left: -190px; animation-duration: 50s; animation-delay: 15s; }
+    .cloud-2::before { width: 65px; height: 65px; top: -30px; left: 24px; }
+    .cloud-2::after { width: 48px; height: 48px; top: -18px; left: 80px; }
 
-    @keyframes float-cloud {
+    @keyframes cloud-pass {
       0% { transform: translateX(0); }
-      100% { transform: translateX(calc(100vw + 240px)); }
+      100% { transform: translateX(calc(100vw + 260px)); }
     }
 
-    /* 頂部導航與倉庫清單 */
+    /* 頂部資訊與市集操作面板 */
     .top-bar {
       position: absolute;
       top: 14px;
@@ -104,49 +104,59 @@
     }
 
     .farm-title {
-      background: var(--ui-bg);
-      backdrop-filter: blur(8px);
-      padding: 10px 20px;
-      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 9px 20px;
+      border-radius: 30px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
       font-size: 19px;
       font-weight: 700;
-      color: #2e4a1f;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      pointer-events: auto;
+      color: #274712;
       border: 3px solid #ffffff;
+      pointer-events: auto;
     }
 
-    /* 產物倉庫看板 */
-    .barn-inventory {
-      background: var(--ui-bg);
-      backdrop-filter: blur(8px);
-      padding: 6px 16px;
-      border-radius: 26px;
+    .hub-right {
+      display: flex;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .badge-card {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 7px 16px;
+      border-radius: 24px;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
       border: 3px solid #ffffff;
       display: flex;
       align-items: center;
-      gap: 16px;
-      pointer-events: auto;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #3b5028;
     }
 
-    .inventory-item {
+    .btn-market {
+      background: linear-gradient(180deg, #ffca28 0%, #ff9800 100%);
+      color: #532d00;
+      border: 3px solid white;
+      padding: 7px 18px;
+      border-radius: 24px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.35);
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 15px;
-      font-weight: 700;
-      color: #3b5228;
+      font-family: var(--font-family);
+    }
+    .btn-market:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 16px rgba(255, 152, 0, 0.45);
     }
 
-    .inventory-item span.icon {
-      font-size: 20px;
-    }
-
-    /* 草原與圍欄 */
+    /* 草原與圍欄舞台 */
     .pasture {
       position: absolute;
       bottom: 0;
@@ -158,10 +168,10 @@
       overflow: hidden;
     }
 
-    /* 木質圍欄 */
+    /* 木圍欄 */
     .fence-container {
       position: absolute;
-      top: 5%;
+      top: 6%;
       left: -2%;
       width: 104%;
       height: 70px;
@@ -174,9 +184,8 @@
       position: relative;
       width: 16px;
       height: 68px;
-      background: linear-gradient(90deg, #d3955f 0%, #a86c3d 100%);
+      background: linear-gradient(90deg, var(--wood-light) 0%, var(--wood-dark) 100%);
       border-radius: 3px 3px 1px 1px;
-      box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.12);
     }
     .fence-post::before {
       content: '';
@@ -185,7 +194,7 @@
       left: 0;
       border-left: 8px solid transparent;
       border-right: 8px solid transparent;
-      border-bottom: 8px solid #d3955f;
+      border-bottom: 8px solid var(--wood-light);
     }
 
     .fence-rail {
@@ -193,34 +202,33 @@
       left: 0;
       width: 100%;
       height: 10px;
-      background: linear-gradient(180deg, #c78953 0%, #995f32 100%);
+      background: linear-gradient(180deg, var(--wood-light) 0%, var(--wood-dark) 100%);
     }
     .fence-rail.upper { top: 15px; }
-    .fence-rail.lower { top: 40px; }
+    .fence-rail.lower { top: 42px; }
 
-    /* 動物活動互動場地 */
+    /* 動物互動區域舞台 */
     .farm-field {
       position: absolute;
-      top: 14%;
+      top: 15%;
       bottom: 120px;
-      left: 4%;
-      right: 4%;
+      left: 3%;
+      right: 3%;
       display: flex;
       justify-content: space-around;
       align-items: center;
-      z-index: 4;
+      z-index: 5;
     }
 
-    /* 動物實體容器 */
     .animal-pod {
       position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
       cursor: pointer;
-      width: 29%;
+      width: 30%;
       max-width: 270px;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transition: transform 0.2s;
     }
 
     .animal-pod:hover {
@@ -228,89 +236,103 @@
     }
 
     /* ========================================================
-       小動物待機動畫 (IDLE ANIMATION)
+       強效且永久運作的待機常駐動畫 (Permanent Idle Keyframes)
        ======================================================== */
-    /* 1. 乳牛：悠閒上下呼吸，耳朵擺動 */
-    #pod-cow .animal-graphic {
-      animation: cow-breathe 3.2s ease-in-out infinite;
+    /* 1. 乳牛：身體起伏、耳朵規律拍動、尾巴微擺 */
+    .cow-idle-body {
+      animation: cow-breathe 2.8s ease-in-out infinite !important;
       transform-origin: bottom center;
     }
-    #pod-cow .cow-ear-left {
-      animation: cow-ear-twitch 4s ease-in-out infinite;
-      transform-origin: 32px 48px;
+    .cow-ear-l {
+      animation: cow-ear-l-wiggle 3.5s ease-in-out infinite !important;
+      transform-origin: 34px 48px;
     }
-    #pod-cow .cow-ear-right {
-      animation: cow-ear-twitch 4s ease-in-out infinite 0.2s;
-      transform-origin: 128px 48px;
+    .cow-ear-r {
+      animation: cow-ear-r-wiggle 3.5s ease-in-out infinite 0.2s !important;
+      transform-origin: 126px 48px;
     }
 
     @keyframes cow-breathe {
       0%, 100% { transform: translateY(0) scale(1, 1); }
-      50% { transform: translateY(-7px) scale(1.02, 0.98); }
+      50% { transform: translateY(-9px) scale(1.03, 0.97); }
     }
-    @keyframes cow-ear-twitch {
-      0%, 90%, 100% { transform: rotate(-20deg); }
-      93% { transform: rotate(-35deg); }
-      96% { transform: rotate(-15deg); }
+    @keyframes cow-ear-l-wiggle {
+      0%, 85%, 100% { transform: rotate(-15deg); }
+      90% { transform: rotate(-35deg); }
+      95% { transform: rotate(-5deg); }
+    }
+    @keyframes cow-ear-r-wiggle {
+      0%, 85%, 100% { transform: rotate(15deg); }
+      90% { transform: rotate(35deg); }
+      95% { transform: rotate(5deg); }
     }
 
-    /* 2. 小雞：輕快微跳、翅膀定時拍動 */
-    #pod-chicken .animal-graphic {
-      animation: chicken-hop 2.2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+    /* 2. 小雞：輕快上下蹦跳、雙翅拍動、眨眼 */
+    .chicken-idle-body {
+      animation: chicken-bob 1.8s cubic-bezier(0.28, 0.84, 0.42, 1) infinite !important;
       transform-origin: bottom center;
     }
-    #chicken-wing-left {
-      animation: flap-wing 1.6s ease-in-out infinite;
-      transform-origin: 48px 80px;
+    .chicken-wing-l {
+      animation: chk-wing-l 1.4s ease-in-out infinite !important;
+      transform-origin: 40px 80px;
     }
-    #chicken-wing-right {
-      animation: flap-wing-right 1.6s ease-in-out infinite;
-      transform-origin: 104px 80px;
+    .chicken-wing-r {
+      animation: chk-wing-r 1.4s ease-in-out infinite !important;
+      transform-origin: 112px 80px;
     }
 
-    @keyframes chicken-hop {
+    @keyframes chicken-bob {
       0%, 100% { transform: translateY(0) scale(1, 1); }
-      40% { transform: translateY(0) scale(1.04, 0.95); }
-      50% { transform: translateY(-14px) scale(0.96, 1.05); }
-      60% { transform: translateY(0) scale(1.02, 0.97); }
+      40% { transform: translateY(0) scale(1.05, 0.95); }
+      50% { transform: translateY(-16px) scale(0.95, 1.05); }
+      60% { transform: translateY(0) scale(1.03, 0.97); }
     }
-    @keyframes flap-wing {
-      0%, 100% { transform: rotate(15deg); }
-      50% { transform: rotate(38deg); }
+    @keyframes chk-wing-l {
+      0%, 100% { transform: rotate(12deg); }
+      50% { transform: rotate(40deg); }
     }
-    @keyframes flap-wing-right {
-      0%, 100% { transform: rotate(-15deg); }
-      50% { transform: rotate(-38deg); }
+    @keyframes chk-wing-r {
+      0%, 100% { transform: rotate(-12deg); }
+      50% { transform: rotate(-40deg); }
     }
 
-    /* 3. 綿羊：軟綿綿毛球彈動 */
-    #pod-sheep .animal-graphic {
-      animation: sheep-puff 3.6s ease-in-out infinite;
+    /* 3. 綿羊：毛茸茸軟彈伸縮 */
+    .sheep-idle-body {
+      animation: sheep-puff 3.2s ease-in-out infinite !important;
       transform-origin: bottom center;
     }
 
     @keyframes sheep-puff {
       0%, 100% { transform: translateY(0) scale(1, 1); }
-      50% { transform: translateY(-8px) scale(1.03, 0.97); }
+      50% { transform: translateY(-10px) scale(1.04, 0.96); }
     }
 
-    /* 影子隨呼吸同步 */
-    #pod-cow .animal-shadow { animation: shadow-sync 3.2s ease-in-out infinite; }
-    #pod-chicken .animal-shadow { animation: shadow-sync 2.2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite; }
-    #pod-sheep .animal-shadow { animation: shadow-sync 3.6s ease-in-out infinite; }
+    /* 地面影子縮放 */
+    .shadow-cow { animation: shadow-shrink 2.8s ease-in-out infinite; }
+    .shadow-chk { animation: shadow-shrink 1.8s cubic-bezier(0.28, 0.84, 0.42, 1) infinite; }
+    .shadow-shp { animation: shadow-shrink 3.2s ease-in-out infinite; }
 
-    @keyframes shadow-sync {
-      0%, 100% { transform: scale(1); opacity: 0.32; }
-      50% { transform: scale(0.85); opacity: 0.18; }
+    @keyframes shadow-shrink {
+      0%, 100% { transform: scale(1); opacity: 0.35; }
+      50% { transform: scale(0.85); opacity: 0.2; }
     }
 
-    /* 餵食中的咀嚼動作 */
+    /* 餵食時快速咀嚼回饋 */
     .animal-pod.eating .animal-graphic {
-      animation: chewing 0.35s ease-in-out 3 !important;
+      animation: eat-wiggle 0.35s ease-in-out 3 !important;
     }
-    @keyframes chewing {
-      0%, 100% { transform: scale(1) translateY(0); }
-      50% { transform: scale(1.08, 0.92) translateY(5px); }
+    @keyframes eat-wiggle {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.12, 0.88) translateY(6px); }
+    }
+
+    /* 影子主體 */
+    .animal-shadow {
+      width: 120px;
+      height: 20px;
+      background: rgba(36, 68, 12, 0.35);
+      border-radius: 50%;
+      margin-top: -12px;
     }
 
     /* 對話氣泡 */
@@ -318,18 +340,18 @@
       position: absolute;
       top: -38px;
       background: white;
-      padding: 5px 12px;
-      border-radius: 18px;
+      padding: 5px 14px;
+      border-radius: 20px;
       font-size: 13px;
       font-weight: 700;
       color: #3f3f3f;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.12);
       opacity: 0;
       transform: translateY(6px);
       transition: all 0.25s cubic-bezier(0.18, 0.89, 0.32, 1.28);
       white-space: nowrap;
       pointer-events: none;
-      z-index: 10;
+      z-index: 15;
     }
     .speech-bubble::after {
       content: '';
@@ -346,24 +368,15 @@
       transform: translateY(0);
     }
 
-    .animal-shadow {
-      width: 130px;
-      height: 22px;
-      background: rgba(35, 66, 12, 0.35);
-      border-radius: 50%;
-      margin-top: -10px;
-    }
-
-    /* 經驗值與等級牌 */
+    /* 等級與經驗條卡片 */
     .status-card {
       margin-top: 10px;
-      background: var(--ui-bg);
-      backdrop-filter: blur(6px);
+      background: rgba(255, 255, 255, 0.95);
       padding: 8px 14px;
       border-radius: 16px;
       width: 100%;
       text-align: center;
-      box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
       border: 2px solid white;
     }
 
@@ -377,22 +390,22 @@
     .animal-name {
       font-weight: 700;
       font-size: 15px;
-      color: #2b3a1d;
+      color: #274712;
     }
 
     .badge-level {
-      background: #ff6b4a;
+      background: #ff663b;
       color: white;
       font-size: 11px;
       font-weight: 700;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 10px;
     }
 
     .exp-bar-wrap {
       width: 100%;
       height: 10px;
-      background: #e1e8d3;
+      background: #e1e9d6;
       border-radius: 10px;
       overflow: hidden;
       position: relative;
@@ -409,11 +422,11 @@
     .exp-text {
       font-size: 11px;
       font-weight: 600;
-      color: #687358;
+      color: #697858;
       margin-top: 3px;
     }
 
-    /* 飾品 */
+    /* 升級飾品 */
     .accessory {
       opacity: 0;
       transform: scale(0.4);
@@ -426,59 +439,58 @@
     }
 
     /* ========================================================
-       農場掉落產物特效 (DROPPED PRODUCT)
+       農場升級產物掉落與動畫 (Dropped Farm Products)
        ======================================================== */
     .dropped-product {
       position: absolute;
-      width: 44px;
-      height: 44px;
-      background: white;
+      width: 46px;
+      height: 46px;
+      background: #ffffff;
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       font-size: 26px;
-      box-shadow: 0 6px 16px rgba(0,0,0,0.2);
-      border: 3px solid #ffea79;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.22);
+      border: 3px solid #ffd43f;
       cursor: pointer;
-      z-index: 50;
+      z-index: 40;
       animation: drop-bounce 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, pulse-glow 1.2s infinite alternate;
+      transition: transform 0.15s;
+    }
+    .dropped-product:hover {
+      transform: scale(1.15) !important;
     }
 
     @keyframes drop-bounce {
-      0% { transform: translateY(-70px) scale(0.3); opacity: 0; }
-      50% { transform: translateY(12px) scale(1.18); opacity: 1; }
-      75% { transform: translateY(-8px) scale(0.95); }
+      0% { transform: translateY(-60px) scale(0.2); opacity: 0; }
+      55% { transform: translateY(14px) scale(1.2); opacity: 1; }
+      80% { transform: translateY(-6px) scale(0.95); }
       100% { transform: translateY(0) scale(1); }
     }
 
     @keyframes pulse-glow {
-      0% { box-shadow: 0 0 6px #ffea79; }
-      100% { box-shadow: 0 0 16px #ff9800; }
+      0% { box-shadow: 0 0 8px #ffea79; }
+      100% { box-shadow: 0 0 18px #ff9800; }
     }
 
-    .dropped-product:hover {
-      transform: scale(1.15);
-    }
-
-    /* 收集飛入倉庫動畫 */
     .flying-to-inventory {
-      transition: all 0.65s cubic-bezier(0.19, 1, 0.22, 1) !important;
-      opacity: 0.9;
-      transform: scale(0.6) !important;
+      transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1) !important;
+      opacity: 0.8;
+      transform: scale(0.4) !important;
     }
 
-    /* 底部飼料切換工具列 */
+    /* 底部餵食欄 */
     .feed-dock {
       position: absolute;
       bottom: 16px;
       left: 50%;
       transform: translateX(-50%);
-      background: var(--ui-bg);
-      backdrop-filter: blur(12px);
-      padding: 10px 20px;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 10px 22px;
       border-radius: 36px;
-      box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
       display: flex;
       align-items: center;
       gap: 14px;
@@ -496,9 +508,9 @@
 
     .feed-btn {
       background: white;
-      border: 2px solid #eaeaea;
+      border: 2px solid #e5e5e5;
       padding: 8px 14px;
-      border-radius: 18px;
+      border-radius: 20px;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -511,7 +523,7 @@
     }
 
     .feed-btn:hover {
-      background: #fdfaf0;
+      background: #fffdf5;
       border-color: #ffd152;
       transform: translateY(-2px);
     }
@@ -519,23 +531,22 @@
     .feed-btn.selected {
       background: #ffd54f;
       border-color: #ffaa00;
-      color: #4e3200;
+      color: #513100;
       transform: translateY(-2px);
       box-shadow: 0 4px 10px rgba(255, 170, 0, 0.35);
     }
 
-    /* 浮動經驗與升級粒子 */
+    /* 浮動提示文字 */
     .floating-item {
       position: absolute;
       pointer-events: none;
       font-weight: 700;
       font-size: 17px;
-      color: #ff7300;
+      color: #ff7700;
       text-shadow: 0 1px 3px white;
       animation: float-up 0.85s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
       z-index: 45;
     }
-
     @keyframes float-up {
       0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
       30% { opacity: 1; transform: translate(-50%, -20px) scale(1.1); }
@@ -550,15 +561,157 @@
       z-index: 60;
       animation: confetti-fall 1.3s ease-out forwards;
     }
-
     @keyframes confetti-fall {
       0% { transform: translateY(0) rotate(0deg); opacity: 1; }
       100% { transform: translateY(110px) rotate(600deg); opacity: 0; }
     }
 
+    /* ========================================================
+       農產市集 Modal 彈出視窗
+       ======================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .market-box {
+      background: white;
+      width: 90%;
+      max-width: 440px;
+      border-radius: 28px;
+      padding: 24px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+      border: 4px solid #fff3d0;
+      animation: pop-in 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes pop-in {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    .market-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      border-bottom: 2px dashed #f0f0f0;
+      padding-bottom: 12px;
+    }
+
+    .market-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #3b5028;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .btn-close {
+      background: #f0f0f0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 700;
+      color: #666;
+    }
+    .btn-close:hover { background: #e0e0e0; }
+
+    .market-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .market-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #fafafa;
+      padding: 10px 16px;
+      border-radius: 18px;
+      border: 2px solid #f2f2f2;
+    }
+
+    .market-item-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .market-item-icon {
+      font-size: 26px;
+    }
+
+    .market-item-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: #333;
+    }
+    .market-item-price {
+      font-size: 12px;
+      font-weight: 600;
+      color: #ff9800;
+    }
+
+    .btn-sell-single {
+      background: #4caf50;
+      color: white;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font-family);
+      transition: 0.15s;
+    }
+    .btn-sell-single:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+    .btn-sell-single:not(:disabled):hover {
+      background: #388e3c;
+    }
+
+    .btn-sell-all {
+      width: 100%;
+      background: linear-gradient(180deg, #ffca28 0%, #ff9800 100%);
+      color: #462500;
+      border: none;
+      padding: 12px;
+      border-radius: 20px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: var(--font-family);
+      box-shadow: 0 4px 12px rgba(255, 152, 0, 0.3);
+      transition: 0.2s;
+    }
+    .btn-sell-all:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(255, 152, 0, 0.4);
+    }
+
     @media (max-width: 768px) {
       .top-bar { flex-direction: column; gap: 8px; align-items: stretch; }
-      .barn-inventory { justify-content: space-around; }
+      .hub-right { justify-content: space-between; }
       .farm-field { top: 18%; }
       .animal-pod { width: 31%; }
       .dock-title { display: none; }
@@ -568,33 +721,29 @@
 </head>
 <body>
 
-  <!-- 天空背景 -->
+  <!-- 天空與太陽 -->
   <div class="sky">
     <div class="sun"></div>
     <div class="cloud cloud-1"></div>
     <div class="cloud cloud-2"></div>
   </div>
 
-  <!-- 頂部資訊與產物倉庫 -->
+  <!-- 頂部資訊與市集按鈕 -->
   <header class="top-bar">
     <div class="farm-title">
-      <span>🐮 快樂萌寵牧場</span>
+      <span>🐮 陽光萌寵牧場</span>
     </div>
 
-    <!-- 農場產物倉庫 -->
-    <div class="barn-inventory" id="barn-inventory">
-      <div class="inventory-item" title="乳牛生產的純鮮奶">
-        <span class="icon">🥛</span>
-        <span>牛奶: <b id="inv-milk">0</b></span>
+    <div class="hub-right">
+      <div class="badge-card" id="gold-badge" title="你的農場金幣">
+        <span>💰 金幣:</span>
+        <b id="val-gold">0</b>
       </div>
-      <div class="inventory-item" title="小雞生產的優質蛋">
-        <span class="icon">🥚</span>
-        <span>雞蛋: <b id="inv-egg">0</b></span>
-      </div>
-      <div class="inventory-item" title="綿羊掉落的蓬鬆羊毛">
-        <span class="icon">🧶</span>
-        <span>羊毛: <b id="inv-wool">0</b></span>
-      </div>
+
+      <button class="btn-market" onclick="openMarket()">
+        <span>🏪</span>
+        <span>農產市集</span>
+      </button>
     </div>
   </header>
 
@@ -614,12 +763,12 @@
       <div class="fence-post"></div>
     </div>
 
-    <!-- 動物活動區 -->
+    <!-- 動物互動區 -->
     <div class="farm-field">
 
       <!-- 1. 乳牛 -->
       <div class="animal-pod" id="pod-cow" onclick="feedAnimal('cow')">
-        <div class="speech-bubble" id="bubble-cow">哞～快餵我！</div>
+        <div class="speech-bubble" id="bubble-cow">哞～今天草真香！</div>
         
         <svg class="animal-graphic" width="160" height="150" viewBox="0 0 160 150">
           <defs>
@@ -628,7 +777,7 @@
               <stop offset="100%" stop-color="#ffb3ba" stop-opacity="0"/>
             </radialGradient>
           </defs>
-          <!-- 飾品：花圈 (Level 2 解鎖) -->
+          <!-- 飾品：升級花圈 (Level 2 解鎖) -->
           <g class="accessory" id="cow-acc" transform="translate(48, 12)">
             <circle cx="15" cy="15" r="7" fill="#ff4081" />
             <circle cx="28" cy="12" r="6" fill="#ffd600" />
@@ -638,38 +787,43 @@
           <!-- 牛角 -->
           <polygon points="46,38 34,22 56,30" fill="#f4a261"/>
           <polygon points="114,38 126,22 104,30" fill="#f4a261"/>
-          <!-- 耳朵 -->
-          <g class="cow-ear-left">
+          
+          <!-- 常態晃動耳朵 -->
+          <g class="cow-ear-l">
             <ellipse cx="32" cy="48" rx="14" ry="8" fill="#e9ecef" transform="rotate(-20, 32, 48)"/>
             <ellipse cx="32" cy="48" rx="8" ry="4" fill="#ffb3ba" transform="rotate(-20, 32, 48)"/>
           </g>
-          <g class="cow-ear-right">
+          <g class="cow-ear-r">
             <ellipse cx="128" cy="48" rx="14" ry="8" fill="#e9ecef" transform="rotate(20, 128, 48)"/>
             <ellipse cx="128" cy="48" rx="8" ry="4" fill="#ffb3ba" transform="rotate(20, 128, 48)"/>
           </g>
-          <!-- 身體 -->
-          <rect x="35" y="55" width="90" height="74" rx="36" fill="#f8f9fa"/>
-          <!-- 黑斑紋路 -->
-          <path d="M44,65 Q58,60 62,75 Q65,90 48,92 Z" fill="#343a40"/>
-          <path d="M102,68 Q120,62 122,82 Q115,95 98,85 Z" fill="#343a40"/>
-          <!-- 眼睛 -->
-          <circle cx="62" cy="62" r="5" fill="#212529"/>
-          <circle cx="64" cy="60" r="2" fill="#ffffff"/>
-          <circle cx="98" cy="62" r="5" fill="#212529"/>
-          <circle cx="100" cy="60" r="2" fill="#ffffff"/>
-          <!-- 腮紅 -->
-          <circle cx="50" cy="72" r="7" fill="url(#cowBlush)"/>
-          <circle cx="110" cy="72" r="7" fill="url(#cowBlush)"/>
-          <!-- 大粉紅牛鼻與嘴 -->
-          <ellipse cx="80" cy="84" rx="28" ry="17" fill="#ffcad4"/>
-          <circle cx="70" cy="82" r="3.5" fill="#e07a5f"/>
-          <circle cx="90" cy="82" r="3.5" fill="#e07a5f"/>
-          <path d="M74,90 Q80,95 86,90" stroke="#d00000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-          <!-- 蹄 -->
-          <rect x="48" y="124" width="16" height="15" rx="5" fill="#495057"/>
-          <rect x="96" y="124" width="16" height="15" rx="5" fill="#495057"/>
+          
+          <!-- 常態呼吸身體群組 -->
+          <g class="cow-idle-body">
+            <!-- 身體 -->
+            <rect x="35" y="55" width="90" height="74" rx="36" fill="#f8f9fa"/>
+            <!-- 斑紋 -->
+            <path d="M44,65 Q58,60 62,75 Q65,90 48,92 Z" fill="#343a40"/>
+            <path d="M102,68 Q120,62 122,82 Q115,95 98,85 Z" fill="#343a40"/>
+            <!-- 眼睛 -->
+            <circle cx="62" cy="62" r="5" fill="#212529"/>
+            <circle cx="64" cy="60" r="2" fill="#ffffff"/>
+            <circle cx="98" cy="62" r="5" fill="#212529"/>
+            <circle cx="100" cy="60" r="2" fill="#ffffff"/>
+            <!-- 腮紅 -->
+            <circle cx="50" cy="72" r="7" fill="url(#cowBlush)"/>
+            <circle cx="110" cy="72" r="7" fill="url(#cowBlush)"/>
+            <!-- 大粉紅牛鼻與嘴 -->
+            <ellipse cx="80" cy="84" rx="28" ry="17" fill="#ffcad4"/>
+            <circle cx="70" cy="82" r="3.5" fill="#e07a5f"/>
+            <circle cx="90" cy="82" r="3.5" fill="#e07a5f"/>
+            <path d="M74,90 Q80,95 86,90" stroke="#d00000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+            <!-- 牛蹄 -->
+            <rect x="48" y="124" width="16" height="15" rx="5" fill="#495057"/>
+            <rect x="96" y="124" width="16" height="15" rx="5" fill="#495057"/>
+          </g>
         </svg>
-        <div class="animal-shadow"></div>
+        <div class="animal-shadow shadow-cow"></div>
 
         <div class="status-card">
           <div class="animal-header">
@@ -685,35 +839,45 @@
 
       <!-- 2. 小雞 -->
       <div class="animal-pod" id="pod-chicken" onclick="feedAnimal('chicken')">
-        <div class="speech-bubble" id="bubble-chicken">咕咕～想吃玉米！</div>
+        <div class="speech-bubble" id="bubble-chicken">咕咕～快餵我玉米！</div>
         
         <svg class="animal-graphic" width="150" height="150" viewBox="0 0 150 150">
-          <!-- 飾品：派對小尖帽 (Level 2 解鎖) -->
+          <!-- 飾品：派對帽 (Level 2 解鎖) -->
           <g class="accessory" id="chicken-acc" transform="translate(60, 16)">
             <polygon points="15,0 0,32 30,32" fill="#ab47bc"/>
             <circle cx="15" cy="0" r="4" fill="#ffd54f"/>
           </g>
-          <!-- 雞冠 -->
-          <path d="M68,36 C64,22 76,20 78,32 C84,18 96,24 90,38 Z" fill="#e63946"/>
-          <!-- 滾圓身體 -->
-          <circle cx="76" cy="80" r="44" fill="#ffea79"/>
-          <!-- 左右翅膀 -->
-          <ellipse id="chicken-wing-left" cx="42" cy="82" rx="13" ry="19" fill="#ffd43f" transform="rotate(15, 42, 82)"/>
-          <ellipse id="chicken-wing-right" cx="110" cy="82" rx="13" ry="19" fill="#ffd43f" transform="rotate(-15, 110, 82)"/>
-          <!-- 眼睛 -->
-          <circle cx="66" cy="70" r="4.5" fill="#2b2d42"/>
-          <circle cx="68" cy="68" r="1.5" fill="#ffffff"/>
-          <circle cx="94" cy="70" r="4.5" fill="#2b2d42"/>
-          <circle cx="96" cy="68" r="1.5" fill="#ffffff"/>
-          <!-- 腮紅與橘嘴 -->
-          <circle cx="58" cy="79" r="6" fill="#ff8a80" opacity="0.6"/>
-          <circle cx="102" cy="79" r="6" fill="#ff8a80" opacity="0.6"/>
-          <polygon points="73,76 87,76 80,88" fill="#f77f00"/>
-          <!-- 小腳丫 -->
-          <line x1="64" y1="123" x2="64" y2="137" stroke="#f77f00" stroke-width="4" stroke-linecap="round"/>
-          <line x1="88" y1="123" x2="88" y2="137" stroke="#f77f00" stroke-width="4" stroke-linecap="round"/>
+          
+          <!-- 常態彈跳小雞身體群組 -->
+          <g class="chicken-idle-body">
+            <!-- 雞冠 -->
+            <path d="M68,36 C64,22 76,20 78,32 C84,18 96,24 90,38 Z" fill="#e63946"/>
+            <!-- 圓圓身體 -->
+            <circle cx="76" cy="80" r="44" fill="#ffea79"/>
+            
+            <!-- 獨立揮動翅膀 -->
+            <g class="chicken-wing-l">
+              <ellipse cx="42" cy="82" rx="13" ry="19" fill="#ffd43f" transform="rotate(15, 42, 82)"/>
+            </g>
+            <g class="chicken-wing-r">
+              <ellipse cx="110" cy="82" rx="13" ry="19" fill="#ffd43f" transform="rotate(-15, 110, 82)"/>
+            </g>
+            
+            <!-- 眼睛 -->
+            <circle cx="66" cy="70" r="4.5" fill="#2b2d42"/>
+            <circle cx="68" cy="68" r="1.5" fill="#ffffff"/>
+            <circle cx="94" cy="70" r="4.5" fill="#2b2d42"/>
+            <circle cx="96" cy="68" r="1.5" fill="#ffffff"/>
+            <!-- 腮紅與尖橘鳥嘴 -->
+            <circle cx="58" cy="79" r="6" fill="#ff8a80" opacity="0.6"/>
+            <circle cx="102" cy="79" r="6" fill="#ff8a80" opacity="0.6"/>
+            <polygon points="73,76 87,76 80,88" fill="#f77f00"/>
+            <!-- 腳 -->
+            <line x1="64" y1="123" x2="64" y2="137" stroke="#f77f00" stroke-width="4" stroke-linecap="round"/>
+            <line x1="88" y1="123" x2="88" y2="137" stroke="#f77f00" stroke-width="4" stroke-linecap="round"/>
+          </g>
         </svg>
-        <div class="animal-shadow" style="width: 95px;"></div>
+        <div class="animal-shadow shadow-chk" style="width: 95px;"></div>
 
         <div class="status-card">
           <div class="animal-header">
@@ -729,7 +893,7 @@
 
       <!-- 3. 綿羊 -->
       <div class="animal-pod" id="pod-sheep" onclick="feedAnimal('sheep')">
-        <div class="speech-bubble" id="bubble-sheep">咩～給我苜蓿草！</div>
+        <div class="speech-bubble" id="bubble-sheep">咩～毛毛澎澎的好舒服！</div>
         
         <svg class="animal-graphic" width="160" height="150" viewBox="0 0 160 150">
           <!-- 飾品：金色皇冠 (Level 2 解鎖) -->
@@ -737,31 +901,35 @@
             <polygon points="0,22 6,4 16,15 26,4 32,22" fill="#ffd700" stroke="#f39c12" stroke-width="2"/>
             <circle cx="16" cy="18" r="3" fill="#e74c3c"/>
           </g>
-          <!-- 澎澎羊毛球 -->
-          <ellipse cx="80" cy="80" rx="46" ry="38" fill="#ffffff"/>
-          <circle cx="52" cy="62" r="20" fill="#f4f5f6"/>
-          <circle cx="108" cy="62" r="20" fill="#f4f5f6"/>
-          <circle cx="46" cy="88" r="21" fill="#f4f5f6"/>
-          <circle cx="114" cy="88" r="21" fill="#f4f5f6"/>
-          <circle cx="80" cy="54" r="24" fill="#ffffff"/>
-          <!-- 耳朵 -->
-          <circle cx="36" cy="64" r="9" fill="#dab692"/>
-          <circle cx="124" cy="64" r="9" fill="#dab692"/>
-          <!-- 羊臉蛋 -->
-          <ellipse cx="80" cy="78" rx="22" ry="24" fill="#ffeedd"/>
-          <!-- 眼睛 -->
-          <ellipse cx="71" cy="74" rx="3.5" ry="5" fill="#333"/>
-          <circle cx="73" cy="72" r="1.5" fill="#fff"/>
-          <ellipse cx="89" cy="74" rx="3.5" ry="5" fill="#333"/>
-          <circle cx="91" cy="72" r="1.5" fill="#fff"/>
-          <!-- 小鼻嘴 -->
-          <polygon points="77,84 83,84 80,87" fill="#ff9999"/>
-          <path d="M78,89 Q80,92 82,89" stroke="#b07d62" stroke-width="1.8" fill="none"/>
-          <!-- 腳 -->
-          <rect x="58" y="115" width="10" height="19" rx="5" fill="#495057"/>
-          <rect x="92" y="115" width="10" height="19" rx="5" fill="#495057"/>
+          
+          <!-- 常態綿羊彈動群組 -->
+          <g class="sheep-idle-body">
+            <!-- 蓬鬆羊毛球主體 -->
+            <ellipse cx="80" cy="80" rx="46" ry="38" fill="#ffffff"/>
+            <circle cx="52" cy="62" r="20" fill="#f4f5f6"/>
+            <circle cx="108" cy="62" r="20" fill="#f4f5f6"/>
+            <circle cx="46" cy="88" r="21" fill="#f4f5f6"/>
+            <circle cx="114" cy="88" r="21" fill="#f4f5f6"/>
+            <circle cx="80" cy="54" r="24" fill="#ffffff"/>
+            <!-- 耳朵 -->
+            <circle cx="36" cy="64" r="9" fill="#dab692"/>
+            <circle cx="124" cy="64" r="9" fill="#dab692"/>
+            <!-- 羊臉蛋 -->
+            <ellipse cx="80" cy="78" rx="22" ry="24" fill="#ffeedd"/>
+            <!-- 眼睛 -->
+            <ellipse cx="71" cy="74" rx="3.5" ry="5" fill="#333"/>
+            <circle cx="73" cy="72" r="1.5" fill="#fff"/>
+            <ellipse cx="89" cy="74" rx="3.5" ry="5" fill="#333"/>
+            <circle cx="91" cy="72" r="1.5" fill="#fff"/>
+            <!-- 小鼻嘴 -->
+            <polygon points="77,84 83,84 80,87" fill="#ff9999"/>
+            <path d="M78,89 Q80,92 82,89" stroke="#b07d62" stroke-width="1.8" fill="none"/>
+            <!-- 腳 -->
+            <rect x="58" y="115" width="10" height="19" rx="5" fill="#495057"/>
+            <rect x="92" y="115" width="10" height="19" rx="5" fill="#495057"/>
+          </g>
         </svg>
-        <div class="animal-shadow"></div>
+        <div class="animal-shadow shadow-shp"></div>
 
         <div class="status-card">
           <div class="animal-header">
@@ -794,19 +962,87 @@
 
     <button class="feed-btn" onclick="selectFood('clover', 40, this)">
       <span>🍀</span>
-      <span>四葉幸運草 (+40)</span>
+      <span>幸運草 (+40)</span>
     </button>
   </footer>
+
+  <!-- 農產市集 Modal 視窗 -->
+  <div class="modal-overlay" id="market-modal">
+    <div class="market-box">
+      <div class="market-header">
+        <div class="market-title">
+          <span>🏪</span>
+          <span>農產品收購市集</span>
+        </div>
+        <button class="btn-close" onclick="closeMarket()">✕</button>
+      </div>
+
+      <div class="market-list">
+        <!-- 鮮奶 -->
+        <div class="market-item">
+          <div class="market-item-info">
+            <span class="market-item-icon">🥛</span>
+            <div>
+              <div class="market-item-name">優質牛奶</div>
+              <div class="market-item-price">售價: 15 金幣 / 瓶</div>
+            </div>
+          </div>
+          <div>
+            <span style="font-weight: 700; margin-right: 8px;">庫存: <b id="mkt-milk-count">0</b></span>
+            <button class="btn-sell-single" id="btn-sell-milk" onclick="sellItem('milk')">販售 1 瓶</button>
+          </div>
+        </div>
+
+        <!-- 雞蛋 -->
+        <div class="market-item">
+          <div class="market-item-info">
+            <span class="market-item-icon">🥚</span>
+            <div>
+              <div class="market-item-name">新鮮雞蛋</div>
+              <div class="market-item-price">售價: 10 金幣 / 顆</div>
+            </div>
+          </div>
+          <div>
+            <span style="font-weight: 700; margin-right: 8px;">庫存: <b id="mkt-egg-count">0</b></span>
+            <button class="btn-sell-single" id="btn-sell-egg" onclick="sellItem('egg')">販售 1 顆</button>
+          </div>
+        </div>
+
+        <!-- 羊毛 -->
+        <div class="market-item">
+          <div class="market-item-info">
+            <span class="market-item-icon">🧶</span>
+            <div>
+              <div class="market-item-name">蓬鬆羊毛</div>
+              <div class="market-item-price">售價: 20 金幣 / 坨</div>
+            </div>
+          </div>
+          <div>
+            <span style="font-weight: 700; margin-right: 8px;">庫存: <b id="mkt-wool-count">0</b></span>
+            <button class="btn-sell-single" id="btn-sell-wool" onclick="sellItem('wool')">販售 1 坨</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn-sell-all" onclick="sellAll()">💰 一鍵全賣換金幣</button>
+    </div>
+  </div>
 
   <script>
     /* =========================================================
        1. 遊戲資料設定
        ========================================================= */
     const state = {
+      gold: 0,
       inventory: {
         milk: 0,
         egg: 0,
         wool: 0
+      },
+      prices: {
+        milk: 15,
+        egg: 10,
+        wool: 20
       },
       activeFood: {
         type: 'grass',
@@ -821,7 +1057,7 @@
           level: 1,
           exp: 0,
           maxExp: 25,
-          dialogues: ['哞～這草好嫩！', '升級了，送你新鮮牛奶！', '今天元氣滿滿～']
+          dialogues: ['哞～這草好嫩！', '升級了！噴出優質牛奶！🥛', '每天都精神飽滿！']
         },
         chicken: {
           name: '咕咕小雞',
@@ -830,7 +1066,7 @@
           level: 1,
           exp: 0,
           maxExp: 20,
-          dialogues: ['咕咕！好吃！', '咯咯噠！我下了一顆金雞蛋！', '羽毛越來越漂亮了～']
+          dialogues: ['咕咕！好吃！', '咯咯噠！生出黃金蛋！🥚', '翅膀撲通撲通飛！']
         },
         sheep: {
           name: '泡泡綿羊',
@@ -839,13 +1075,13 @@
           level: 1,
           exp: 0,
           maxExp: 25,
-          dialogues: ['咩～好香的飼料！', '毛長齊了，剪下來做毛線球！', '感覺像在雲朵上一樣～']
+          dialogues: ['咩～好香的飼料！', '毛長好了！掉下羊毛球！🧶', '蓬蓬鬆鬆像雲朵！']
         }
       }
     };
 
     /* =========================================================
-       2. Web Audio 免外部音效引擎
+       2. Web Audio 免外部依賴音效合成引擎
        ========================================================= */
     class FarmSound {
       constructor() { this.ctx = null; }
@@ -863,8 +1099,8 @@
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(360, now);
-        osc.frequency.exponentialRampToValueAtTime(160, now + 0.1);
+        osc.frequency.setValueAtTime(340, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.1);
         gain.gain.setValueAtTime(0.2, now);
         gain.gain.linearRampToValueAtTime(0, now + 0.1);
         osc.connect(gain);
@@ -879,40 +1115,40 @@
         notes.forEach((freq, idx) => {
           const osc = this.ctx.createOscillator();
           const gain = this.ctx.createGain();
-          const now = this.ctx.currentTime + (idx * 0.09);
+          const now = this.ctx.currentTime + (idx * 0.08);
           osc.type = 'sine';
           osc.frequency.setValueAtTime(freq, now);
           gain.gain.setValueAtTime(0, now);
-          gain.gain.linearRampToValueAtTime(0.25, now + 0.03);
-          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+          gain.gain.linearRampToValueAtTime(0.2, now + 0.03);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
           osc.connect(gain);
           gain.connect(this.ctx.destination);
           osc.start(now);
-          osc.stop(now + 0.45);
+          osc.stop(now + 0.4);
         });
       }
 
-      playCollect() {
+      playCoin() {
         this.init();
         const now = this.ctx.currentTime;
         const osc = this.ctx.createOscillator();
         const gain = this.ctx.createGain();
         osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, now); // D5
-        osc.frequency.exponentialRampToValueAtTime(880, now + 0.15); // A5
+        osc.frequency.setValueAtTime(987.77, now); // B5
+        osc.frequency.setValueAtTime(1318.51, now + 0.08); // E6
         gain.gain.setValueAtTime(0.25, now);
-        gain.gain.linearRampToValueAtTime(0, now + 0.15);
+        gain.gain.linearRampToValueAtTime(0, now + 0.25);
         osc.connect(gain);
         gain.connect(this.ctx.destination);
         osc.start(now);
-        osc.stop(now + 0.15);
+        osc.stop(now + 0.25);
       }
     }
 
     const sound = new FarmSound();
 
     /* =========================================================
-       3. 核心餵食與升級邏輯
+       3. 核心互動：餵食、升級與產物掉落
        ========================================================= */
     function selectFood(type, exp, btnElement) {
       document.querySelectorAll('.feed-btn').forEach(btn => btn.classList.remove('selected'));
@@ -927,24 +1163,25 @@
       const animal = state.animals[animalKey];
       const pod = document.getElementById(`pod-${animalKey}`);
 
-      // 觸發咀嚼效果
+      // 快速咀嚼回饋
       pod.classList.remove('eating');
       void pod.offsetWidth;
       pod.classList.add('eating');
 
       // 飄出經驗標籤
-      createFloatingExp(pod, `+${state.activeFood.exp} ${state.activeFood.icon}`);
+      createFloatingText(pod, `+${state.activeFood.exp} ${state.activeFood.icon}`);
 
       animal.exp += state.activeFood.exp;
 
-      // 判斷是否升級
+      // 升級檢測
       let leveledUp = false;
       while (animal.exp >= animal.maxExp) {
         animal.exp -= animal.maxExp;
         animal.level++;
         animal.maxExp = Math.floor(animal.maxExp * 1.5);
         leveledUp = true;
-        // 每次升級必定產生掉落物！
+
+        // 升級必定掉落農場產物！
         dropProduct(animalKey);
       }
 
@@ -957,23 +1194,21 @@
       updateUI(animalKey);
     }
 
-    // 觸發升級彩帶與外觀
     function triggerLevelUp(animalKey) {
       sound.playLevelUp();
       const animal = state.animals[animalKey];
       const pod = document.getElementById(`pod-${animalKey}`);
 
-      showDialogue(animalKey, `🎉 升到 Lv.${animal.level}！產出 ${animal.productIcon}！`);
+      showDialogue(animalKey, `🎉 升到 Lv.${animal.level}！產出了 ${animal.productIcon}！`);
       spawnConfetti(pod);
 
-      // 解鎖可愛飾品 (Level 2 以上)
       if (animal.level >= 2) {
         const acc = document.getElementById(`${animalKey}-acc`);
         if (acc) acc.classList.add('unlocked');
       }
     }
 
-    // 掉落農場產物在草地上
+    // 掉落農場產物在圍欄草地上
     function dropProduct(animalKey) {
       const animal = state.animals[animalKey];
       const pod = document.getElementById(`pod-${animalKey}`);
@@ -982,11 +1217,10 @@
       const dropEl = document.createElement('div');
       dropEl.className = 'dropped-product';
       dropEl.innerHTML = animal.productIcon;
-      dropEl.title = `點擊收取 ${animal.name} 產出的產物！`;
+      dropEl.title = `點擊收集 ${animal.name} 產出的物資！`;
 
-      // 隨機在動物腳邊左右掉落
-      const randomOffset = (Math.random() - 0.5) * 80;
-      dropEl.style.left = `${rect.left + rect.width / 2 + randomOffset - 22}px`;
+      const randomX = (Math.random() - 0.5) * 80;
+      dropEl.style.left = `${rect.left + rect.width / 2 + randomX - 23}px`;
       dropEl.style.top = `${rect.bottom - 45}px`;
 
       // 點擊收集機制
@@ -998,29 +1232,81 @@
       document.body.appendChild(dropEl);
     }
 
-    // 收集產物飛入倉庫
+    // 收集產物飛入市集或倉庫
     function collectProduct(productType, dropEl) {
-      sound.playCollect();
-      const targetEl = document.getElementById(`inv-${productType}`);
+      sound.playCoin();
+      const targetEl = document.getElementById('gold-badge');
       const targetRect = targetEl.getBoundingClientRect();
 
-      // 移動到右上角倉庫的飛行軌跡
       dropEl.classList.add('flying-to-inventory');
-      dropEl.style.left = `${targetRect.left}px`;
+      dropEl.style.left = `${targetRect.left + 20}px`;
       dropEl.style.top = `${targetRect.top}px`;
 
       setTimeout(() => {
         dropEl.remove();
         state.inventory[productType]++;
-        targetEl.textContent = state.inventory[productType];
-        
-        // 倉庫數字彈跳一下
-        targetEl.parentElement.style.transform = 'scale(1.2)';
-        targetEl.parentElement.style.transition = '0.2s';
-        setTimeout(() => targetEl.parentElement.style.transform = 'scale(1)', 200);
-      }, 650);
+        updateMarketUI();
+
+        // 提示獲得物品
+        createFloatingText(targetEl, `+1 庫存!`);
+      }, 550);
     }
 
+    /* =========================================================
+       4. 農產市集：販賣賺金幣
+       ========================================================= */
+    function openMarket() {
+      sound.playEat();
+      updateMarketUI();
+      document.getElementById('market-modal').classList.add('active');
+    }
+
+    function closeMarket() {
+      document.getElementById('market-modal').classList.remove('active');
+    }
+
+    function updateMarketUI() {
+      document.getElementById('val-gold').textContent = state.gold;
+      document.getElementById('mkt-milk-count').textContent = state.inventory.milk;
+      document.getElementById('mkt-egg-count').textContent = state.inventory.egg;
+      document.getElementById('mkt-wool-count').textContent = state.inventory.wool;
+
+      document.getElementById('btn-sell-milk').disabled = state.inventory.milk <= 0;
+      document.getElementById('btn-sell-egg').disabled = state.inventory.egg <= 0;
+      document.getElementById('btn-sell-wool').disabled = state.inventory.wool <= 0;
+    }
+
+    function sellItem(type) {
+      if (state.inventory[type] > 0) {
+        state.inventory[type]--;
+        state.gold += state.prices[type];
+        sound.playCoin();
+        updateMarketUI();
+      }
+    }
+
+    function sellAll() {
+      const earn = (state.inventory.milk * state.prices.milk) +
+                   (state.inventory.egg * state.prices.egg) +
+                   (state.inventory.wool * state.prices.wool);
+
+      if (earn === 0) {
+        alert('目前倉庫沒有任何可販賣的農產品！快去餵食動物讓他們升級吧！');
+        return;
+      }
+
+      state.gold += earn;
+      state.inventory.milk = 0;
+      state.inventory.egg = 0;
+      state.inventory.wool = 0;
+
+      sound.playCoin();
+      updateMarketUI();
+    }
+
+    /* =========================================================
+       5. 輔助視覺特效
+       ========================================================= */
     function updateUI(animalKey) {
       const animal = state.animals[animalKey];
       const bar = document.getElementById(`${animalKey}-bar`);
@@ -1034,13 +1320,13 @@
       bar.style.width = `${pct}%`;
     }
 
-    function createFloatingExp(pod, text) {
+    function createFloatingText(anchorEl, text) {
       const floatEl = document.createElement('div');
       floatEl.className = 'floating-item';
       floatEl.textContent = text;
       floatEl.style.left = '50%';
       floatEl.style.top = '30%';
-      pod.appendChild(floatEl);
+      anchorEl.appendChild(floatEl);
       setTimeout(() => floatEl.remove(), 850);
     }
 
@@ -1074,6 +1360,7 @@
       updateUI('cow');
       updateUI('chicken');
       updateUI('sheep');
+      updateMarketUI();
     });
   </script>
 </body>
