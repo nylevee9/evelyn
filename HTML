@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>陽光萌寵牧場 - Cozy Animal Farm</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-sky: #cbf3f9;
+      --bg-grass-light: #b4e380;
+      --bg-grass-dark: #88c950;
+      --fence-wood: #c68b59;
+      --fence-shadow: #995d3f;
+      --ui-bg: rgba(255, 255, 255, 0.92);
+      --font-family: 'Fredoka', 'Quicksand', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-family);
+      background-color: var(--bg-sky);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* 天空與背景裝飾 */
+    .sky {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 48%;
+      background: linear-gradient(180deg, #9ae2f8 0%, #e2f7ff 90%, #b4e380 100%);
+      z-index: 1;
+      overflow: hidden;
+    }
+
+    .sun {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      width: 75px;
+      height: 75px;
+      background: #ffd152;
+      border-radius: 50%;
+      box-shadow: 0 0 40px #ffb300;
+      animation: sun-pulse 4s ease-in-out infinite alternate;
+    }
+
+    @keyframes sun-pulse {
+      0% { transform: scale(0.96); filter: drop-shadow(0 0 15px #ffd152); }
+      100% { transform: scale(1.05); filter: drop-shadow(0 0 35px #ffa834); }
+    }
+
+    .cloud {
+      position: absolute;
+      background: white;
+      border-radius: 50px;
+      opacity: 0.88;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
+      animation: float-cloud linear infinite;
+    }
+    .cloud::before, .cloud::after {
+      content: '';
+      position: absolute;
+      background: white;
+      border-radius: 50%;
+    }
+    .cloud-1 { width: 120px; height: 42px; top: 12%; left: -140px; animation-duration: 38s; }
+    .cloud-1::before { width: 50px; height: 50px; top: -22px; left: 20px; }
+    .cloud-1::after { width: 38px; height: 38px; top: -14px; left: 60px; }
+
+    .cloud-2 { width: 170px; height: 52px; top: 22%; left: -200px; animation-duration: 52s; animation-delay: 15s; }
+    .cloud-2::before { width: 65px; height: 65px; top: -30px; left: 30px; }
+    .cloud-2::after { width: 50px; height: 50px; top: -18px; left: 85px; }
+
+    @keyframes float-cloud {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(calc(100vw + 250px)); }
+    }
+
+    /* 頂部牧場儀表板 */
+    .top-bar {
+      position: absolute;
+      top: 16px;
+      left: 20px;
+      right: 20px;
+      z-index: 20;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .farm-title {
+      background: var(--ui-bg);
+      backdrop-filter: blur(8px);
+      padding: 10px 22px;
+      border-radius: 30px;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      font-size: 20px;
+      font-weight: 700;
+      color: #3b5228;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      pointer-events: auto;
+      border: 3px solid #ffffff;
+    }
+
+    .top-stats {
+      display: flex;
+      gap: 12px;
+      pointer-events: auto;
+    }
+
+    .stat-badge {
+      background: var(--ui-bg);
+      backdrop-filter: blur(8px);
+      padding: 8px 18px;
+      border-radius: 24px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+      font-size: 16px;
+      font-weight: 700;
+      color: #385623;
+      border: 3px solid #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* 草原與圍欄農場 */
+    .pasture {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 60%;
+      background: radial-gradient(circle at 50% 10%, var(--bg-grass-light) 0%, var(--bg-grass-dark) 100%);
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .grass-tuft {
+      position: absolute;
+      width: 14px;
+      height: 18px;
+      border-left: 5px solid #6fa835;
+      border-right: 5px solid #6fa835;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      opacity: 0.6;
+    }
+
+    /* 可愛小木圍欄 */
+    .fence-container {
+      position: absolute;
+      top: 6%;
+      left: -2%;
+      width: 104%;
+      height: 75px;
+      display: flex;
+      justify-content: space-around;
+      z-index: 3;
+    }
+
+    .fence-post {
+      position: relative;
+      width: 18px;
+      height: 72px;
+      background: linear-gradient(90deg, #d89b65 0%, #b27344 100%);
+      border-radius: 4px 4px 1px 1px;
+      box-shadow: 2px 4px 8px rgba(0, 0, 0, 0.15);
+    }
+    .fence-post::before {
+      content: '';
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 9px solid transparent;
+      border-right: 9px solid transparent;
+      border-bottom: 10px solid #d89b65;
+    }
+
+    .fence-rail {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 12px;
+      background: linear-gradient(180deg, #cb8d57 0%, #a16436 100%);
+      box-shadow: 0 4px 6px rgba(0,0,0,0.12);
+    }
+    .fence-rail.upper { top: 16px; }
+    .fence-rail.lower { top: 44px; }
+
+    /* 動物互動區域舞台 */
+    .farm-field {
+      position: absolute;
+      top: 15%;
+      bottom: 140px;
+      left: 5%;
+      right: 5%;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      z-index: 4;
+    }
+
+    /* 動物卡片主體 */
+    .animal-pod {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      width: 28%;
+      max-width: 280px;
+      transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .animal-pod:hover {
+      transform: translateY(-8px) scale(1.02);
+    }
+
+    .animal-pod.chewing .animal-graphic {
+      animation: chewing 0.4s ease-in-out 3;
+    }
+
+    @keyframes chewing {
+      0%, 100% { transform: scale(1) translateY(0); }
+      50% { transform: scale(1.06, 0.94) translateY(4px); }
+    }
+
+    .animal-pod.level-up .animal-graphic {
+      animation: bounce-level 0.75s ease-in-out infinite alternate;
+    }
+
+    @keyframes bounce-level {
+      0% { transform: translateY(0) scale(1); }
+      100% { transform: translateY(-24px) scale(1.08); }
+    }
+
+    /* 對話氣泡 */
+    .speech-bubble {
+      position: absolute;
+      top: -42px;
+      background: white;
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #4a4a4a;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+      white-space: nowrap;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .speech-bubble::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid white;
+    }
+
+    .speech-bubble.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 動物腳下陰影 */
+    .animal-shadow {
+      width: 140px;
+      height: 24px;
+      background: rgba(43, 77, 18, 0.32);
+      border-radius: 50%;
+      margin-top: -12px;
+      transition: all 0.3s;
+    }
+    .animal-pod:hover .animal-shadow {
+      transform: scale(1.1);
+      background: rgba(43, 77, 18, 0.4);
+    }
+
+    /* 狀態卡片 (等級與經驗條) */
+    .status-card {
+      margin-top: 14px;
+      background: var(--ui-bg);
+      backdrop-filter: blur(6px);
+      padding: 10px 16px;
+      border-radius: 18px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+      border: 2px solid white;
+    }
+
+    .animal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+
+    .animal-name {
+      font-weight: 700;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .badge-level {
+      background: #ff7d54;
+      color: white;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 12px;
+    }
+
+    .exp-bar-wrap {
+      width: 100%;
+      height: 12px;
+      background: #e6ebda;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      position: relative;
+    }
+
+    .exp-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ffc93c 0%, #ff8f24 100%);
+      border-radius: 10px;
+      width: 0%;
+      transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .exp-text {
+      font-size: 11px;
+      font-weight: 600;
+      color: #7b836d;
+      margin-top: 4px;
+    }
+
+    /* 升級解鎖飾品 */
+    .accessory {
+      opacity: 0;
+      transform-origin: center;
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      transform: scale(0.5);
+    }
+    .accessory.unlocked {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* 底部餵食控制面板 */
+    .feed-dock {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--ui-bg);
+      backdrop-filter: blur(12px);
+      padding: 12px 24px;
+      border-radius: 36px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      z-index: 30;
+      border: 3px solid white;
+    }
+
+    .dock-title {
+      font-size: 15px;
+      font-weight: 700;
+      color: #555;
+      padding-right: 8px;
+      border-right: 2px solid #ddd;
+    }
+
+    .feed-btn {
+      background: white;
+      border: 2px solid #eaeaea;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-family);
+      font-size: 15px;
+      font-weight: 700;
+      color: #444;
+      transition: all 0.2s cubic-bezier(0.2, 0, 0, 1);
+      outline: none;
+    }
+
+    .feed-btn:hover {
+      background: #fbf8eb;
+      border-color: #ffd152;
+      transform: translateY(-3px);
+      box-shadow: 0 4px 10px rgba(255, 209, 82, 0.35);
+    }
+
+    .feed-btn.selected {
+      background: #ffd54f;
+      border-color: #ffaa00;
+      color: #5d3800;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(255, 170, 0, 0.4);
+    }
+
+    .feed-icon {
+      font-size: 22px;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,0.1));
+    }
+
+    /* 浮動經驗與粒子 */
+    .floating-item {
+      position: absolute;
+      pointer-events: none;
+      font-weight: 700;
+      font-size: 18px;
+      color: #ff8400;
+      text-shadow: 0 2px 4px white;
+      animation: float-up-fade 0.9s cubic-bezier(0.215, 0.61, 0.355, 1) forwards;
+      z-index: 50;
+    }
+
+    @keyframes float-up-fade {
+      0% { opacity: 0; transform: translate(-50%, 0) scale(0.6); }
+      30% { opacity: 1; transform: translate(-50%, -24px) scale(1.15); }
+      100% { opacity: 0; transform: translate(-50%, -65px) scale(0.9); }
+    }
+
+    /* 升級彩色紙片動畫 */
+    .confetti {
+      position: absolute;
+      width: 9px;
+      height: 9px;
+      pointer-events: none;
+      z-index: 60;
+      animation: confetti-drop 1.4s ease-out forwards;
+    }
+
+    @keyframes confetti-drop {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(120px) rotate(720deg); opacity: 0; }
+    }
+
+    /* 響應式優化 */
+    @media (max-width: 768px) {
+      .farm-title { font-size: 16px; padding: 6px 14px; }
+      .farm-field { flex-direction: row; gap: 6px; top: 12%; }
+      .animal-pod { width: 31%; }
+      .dock-title { display: none; }
+      .feed-btn { padding: 6px 10px; font-size: 13px; }
+      .animal-name { font-size: 13px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 天空背景 -->
+  <div class="sky">
+    <div class="sun"></div>
+    <div class="cloud cloud-1"></div>
+    <div class="cloud cloud-2"></div>
+  </div>
+
+  <!-- 頂部資訊列 -->
+  <header class="top-bar">
+    <div class="farm-title">
+      <span>🐮🍀 陽光萌寵牧場</span>
+    </div>
+    <div class="top-stats">
+      <div class="stat-badge">
+        <span>⭐ 總餵食:</span>
+        <span id="total-feeds">0</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 草原與圍欄舞台 -->
+  <main class="pasture">
+    <!-- 圍欄 -->
+    <div class="fence-container">
+      <div class="fence-rail upper"></div>
+      <div class="fence-rail lower"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+      <div class="fence-post"></div>
+    </div>
+
+    <!-- 動物互動區 -->
+    <div class="farm-field">
+
+      <!-- 1. 乳牛 -->
+      <div class="animal-pod" id="pod-cow" data-animal="cow" onclick="feedAnimal('cow')">
+        <div class="speech-bubble" id="bubble-cow">哞～想吃牧草！</div>
+        
+        <svg class="animal-graphic" width="160" height="150" viewBox="0 0 160 150">
+          <defs>
+            <radialGradient id="cowBlush" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#ffb3ba" stop-opacity="0.8"/>
+              <stop offset="100%" stop-color="#ffb3ba" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <!-- 飾品：升級花圈 (Level 3 解鎖) -->
+          <g class="accessory cow-crown" id="cow-acc" transform="translate(48, 10)">
+            <circle cx="15" cy="15" r="7" fill="#ff4081" />
+            <circle cx="28" cy="12" r="6" fill="#ffd600" />
+            <circle cx="42" cy="16" r="7" fill="#00e676" />
+            <circle cx="28" cy="20" r="5" fill="#ff9100" />
+            <path d="M12 20 Q 30 28 50 18" stroke="#388e3c" stroke-width="3" fill="none"/>
+          </g>
+          <!-- 牛角 -->
+          <polygon points="46,38 34,22 56,30" fill="#f4a261" rx="4"/>
+          <polygon points="114,38 126,22 104,30" fill="#f4a261" rx="4"/>
+          <!-- 牛耳朵 -->
+          <ellipse cx="32" cy="48" rx="14" ry="8" fill="#e9ecef" transform="rotate(-20, 32, 48)"/>
+          <ellipse cx="32" cy="48" rx="8" ry="4" fill="#ffb3ba" transform="rotate(-20, 32, 48)"/>
+          <ellipse cx="128" cy="48" rx="14" ry="8" fill="#e9ecef" transform="rotate(20, 128, 48)"/>
+          <ellipse cx="128" cy="48" rx="8" ry="4" fill="#ffb3ba" transform="rotate(20, 128, 48)"/>
+          <!-- 身體 -->
+          <rect x="35" y="55" width="90" height="75" rx="36" fill="#f8f9fa"/>
+          <!-- 牛乳黑斑 -->
+          <path d="M44,65 Q58,60 62,75 Q65,90 48,92 Z" fill="#343a40"/>
+          <path d="M102,68 Q120,62 122,82 Q115,95 98,85 Z" fill="#343a40"/>
+          <!-- 眼睛 -->
+          <circle cx="62" cy="62" r="5" fill="#212529"/>
+          <circle cx="64" cy="60" r="2" fill="#ffffff"/>
+          <circle cx="98" cy="62" r="5" fill="#212529"/>
+          <circle cx="100" cy="60" r="2" fill="#ffffff"/>
+          <!-- 腮紅 -->
+          <circle cx="50" cy="72" r="7" fill="url(#cowBlush)"/>
+          <circle cx="110" cy="72" r="7" fill="url(#cowBlush)"/>
+          <!-- 大粉紅牛鼻子與嘴巴 -->
+          <ellipse cx="80" cy="84" rx="28" ry="17" fill="#ffcad4"/>
+          <circle cx="70" cy="82" r="3.5" fill="#e07a5f"/>
+          <circle cx="90" cy="82" r="3.5" fill="#e07a5f"/>
+          <path d="M74,90 Q80,95 86,90" stroke="#d00000" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- 蹄子 -->
+          <rect x="48" y="125" width="16" height="15" rx="6" fill="#495057"/>
+          <rect x="96" y="125" width="16" height="15" rx="6" fill="#495057"/>
+        </svg>
+        <div class="animal-shadow"></div>
+
+        <div class="status-card">
+          <div class="animal-header">
+            <span class="animal-name">哞哞乳牛</span>
+            <span class="badge-level" id="cow-lvl">Lv. 1</span>
+          </div>
+          <div class="exp-bar-wrap">
+            <div class="exp-fill" id="cow-bar"></div>
+          </div>
+          <div class="exp-text" id="cow-exp-txt">0 / 30 EXP</div>
+        </div>
+      </div>
+
+      <!-- 2. 小雞 -->
+      <div class="animal-pod" id="pod-chicken" data-animal="chicken" onclick="feedAnimal('chicken')">
+        <div class="speech-bubble" id="bubble-chicken">咕咕～好餓！</div>
+        
+        <svg class="animal-graphic" width="150" height="150" viewBox="0 0 150 150">
+          <!-- 飾品：派對生日帽 (Level 3 解鎖) -->
+          <g class="accessory" id="chicken-acc" transform="translate(60, 16)">
+            <polygon points="15,0 0,34 30,34" fill="#ab47bc"/>
+            <circle cx="15" cy="0" r="4" fill="#ffd54f"/>
+            <line x1="4" y1="24" x2="26" y2="24" stroke="#ffeb3b" stroke-width="2"/>
+          </g>
+          <!-- 雞冠 -->
+          <path d="M68,36 C64,22 76,20 78,32 C84,18 96,24 90,38 Z" fill="#e63946"/>
+          <!-- 小雞圓滾身體 -->
+          <circle cx="76" cy="80" r="45" fill="#ffea79"/>
+          <!-- 翅膀 (具拍動潛力) -->
+          <ellipse id="chicken-wing" cx="42" cy="82" rx="14" ry="20" fill="#ffd43f" transform="rotate(18, 42, 82)"/>
+          <ellipse cx="110" cy="82" rx="14" ry="20" fill="#ffd43f" transform="rotate(-18, 110, 82)"/>
+          <!-- 眼睛 -->
+          <circle cx="66" cy="70" r="4.5" fill="#2b2d42"/>
+          <circle cx="68" cy="68" r="1.5" fill="#ffffff"/>
+          <circle cx="94" cy="70" r="4.5" fill="#2b2d42"/>
+          <circle cx="96" cy="68" r="1.5" fill="#ffffff"/>
+          <!-- 萌萌小腮紅 -->
+          <circle cx="58" cy="79" r="6" fill="#ff8a80" opacity="0.6"/>
+          <circle cx="102" cy="79" r="6" fill="#ff8a80" opacity="0.6"/>
+          <!-- 尖橘鳥嘴 -->
+          <polygon points="73,76 87,76 80,88" fill="#f77f00"/>
+          <!-- 雞腳 -->
+          <line x1="64" y1="124" x2="64" y2="138" stroke="#f77f00" stroke-width="4" stroke-linecap="round"/>
+          <line x1="64" y1="138" x2="56" y2="141" stroke="#f77f00" stroke-width="3" stroke-linecap="round"/>
+          <line x1="88" y1="124" x2="88" y2="138" stroke="#f77f00" stroke-width="4" stroke-linecap="round"/>
+          <line x1="88" y1="138" x2="96" y2="141" stroke="#f77f00" stroke-width="3" stroke-linecap="round"/>
+        </svg>
+        <div class="animal-shadow" style="width: 100px;"></div>
+
+        <div class="status-card">
+          <div class="animal-header">
+            <span class="animal-name">咕咕小雞</span>
+            <span class="badge-level" id="chicken-lvl">Lv. 1</span>
+          </div>
+          <div class="exp-bar-wrap">
+            <div class="exp-fill" id="chicken-bar"></div>
+          </div>
+          <div class="exp-text" id="chicken-exp-txt">0 / 25 EXP</div>
+        </div>
+      </div>
+
+      <!-- 3. 綿羊 -->
+      <div class="animal-pod" id="pod-sheep" data-animal="sheep" onclick="feedAnimal('sheep')">
+        <div class="speech-bubble" id="bubble-sheep">咩～毛澎澎的！</div>
+        
+        <svg class="animal-graphic" width="160" height="150" viewBox="0 0 160 150">
+          <!-- 飾品：閃亮小金冠 (Level 3 解鎖) -->
+          <g class="accessory" id="sheep-acc" transform="translate(62, 12)">
+            <polygon points="0,22 6,4 16,15 26,4 32,22" fill="#ffd700" stroke="#f39c12" stroke-width="2"/>
+            <circle cx="16" cy="18" r="3" fill="#e74c3c"/>
+          </g>
+          <!-- 羊毛球蓬鬆主體雲狀 -->
+          <ellipse cx="80" cy="80" rx="46" ry="38" fill="#ffffff"/>
+          <circle cx="52" cy="62" r="20" fill="#f4f5f6"/>
+          <circle cx="108" cy="62" r="20" fill="#f4f5f6"/>
+          <circle cx="46" cy="88" r="21" fill="#f4f5f6"/>
+          <circle cx="114" cy="88" r="21" fill="#f4f5f6"/>
+          <circle cx="80" cy="54" r="24" fill="#ffffff"/>
+          <circle cx="80" cy="104" r="21" fill="#ffffff"/>
+          <!-- 捲耳 -->
+          <circle cx="36" cy="64" r="10" fill="#dab692"/>
+          <circle cx="124" cy="64" r="10" fill="#dab692"/>
+          <!-- 羊臉蛋 (深淺棕色) -->
+          <ellipse cx="80" cy="78" rx="22" ry="24" fill="#ffeedd"/>
+          <!-- 眼睛 -->
+          <ellipse cx="71" cy="74" rx="3.5" ry="5" fill="#333"/>
+          <circle cx="73" cy="72" r="1.5" fill="#fff"/>
+          <ellipse cx="89" cy="74" rx="3.5" ry="5" fill="#333"/>
+          <circle cx="91" cy="72" r="1.5" fill="#fff"/>
+          <!-- 粉嫩小鼻嘴 -->
+          <polygon points="77,84 83,84 80,87" fill="#ff9999"/>
+          <path d="M78,89 Q80,92 82,89" stroke="#b07d62" stroke-width="1.8" fill="none"/>
+          <!-- 羊腿 -->
+          <rect x="58" y="116" width="10" height="20" rx="5" fill="#495057"/>
+          <rect x="92" y="116" width="10" height="20" rx="5" fill="#495057"/>
+        </svg>
+        <div class="animal-shadow"></div>
+
+        <div class="status-card">
+          <div class="animal-header">
+            <span class="animal-name">泡泡綿羊</span>
+            <span class="badge-level" id="sheep-lvl">Lv. 1</span>
+          </div>
+          <div class="exp-bar-wrap">
+            <div class="exp-fill" id="sheep-bar"></div>
+          </div>
+          <div class="exp-text" id="sheep-exp-txt">0 / 30 EXP</div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- 底部飼料切換工具列 -->
+  <footer class="feed-dock">
+    <div class="dock-title">選擇飼料</div>
+
+    <button class="feed-btn selected" onclick="selectFood('grass', 10, this)">
+      <span class="feed-icon">🌿</span>
+      <span>青脆牧草 (+10 EXP)</span>
+    </button>
+
+    <button class="feed-btn" onclick="selectFood('corn', 20, this)">
+      <span class="feed-icon">🌽</span>
+      <span>金黃玉米 (+20 EXP)</span>
+    </button>
+
+    <button class="feed-btn" onclick="selectFood('clover', 50, this)">
+      <span class="feed-icon">🍀</span>
+      <span>幸運草 (+50 EXP)</span>
+    </button>
+  </footer>
+
+  <script>
+    /* =========================================================
+       1. 遊戲資料狀態
+       ========================================================= */
+    const state = {
+      totalFeeds: 0,
+      activeFood: {
+        type: 'grass',
+        exp: 10,
+        icon: '🌿'
+      },
+      animals: {
+        cow: {
+          name: '哞哞乳牛',
+          level: 1,
+          exp: 0,
+          maxExp: 30,
+          dialogues: ['哞～真好吃！', '產出濃郁牛奶囉！🥛', '感覺全身充滿力量！✨', '牛角在發光～']
+        },
+        chicken: {
+          name: '咕咕小雞',
+          level: 1,
+          exp: 0,
+          maxExp: 25,
+          dialogues: ['咕咕咕！謝謝主人！', '生了一顆金雞蛋～🥚', '我要飛高高了！🐥', '羽毛亮晶晶！✨']
+        },
+        sheep: {
+          name: '泡泡綿羊',
+          level: 1,
+          exp: 0,
+          maxExp: 30,
+          dialogues: ['咩～～好幸福！', '羊毛又軟又蓬鬆！🧶', '舒服得想要打瞌睡～💤', '今天我是綿羊國王！👑']
+        }
+      }
+    };
+
+    /* =========================================================
+       2. Web Audio 免外部依賴音效合成引擎
+       ========================================================= */
+    class FarmSound {
+      constructor() {
+        this.ctx = null;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      // 咀嚼清脆聲
+      playEat() {
+        this.init();
+        const now = this.ctx.currentTime;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(320, now);
+        osc.frequency.exponentialRampToValueAtTime(140, now + 0.12);
+
+        gain.gain.setValueAtTime(0.2, now);
+        gain.gain.linearRampToValueAtTime(0, now + 0.12);
+
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(now);
+        osc.stop(now + 0.12);
+      }
+
+      // 升級快樂和弦
+      playLevelUp() {
+        this.init();
+        const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+        notes.forEach((freq, idx) => {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          const now = this.ctx.currentTime + (idx * 0.1);
+
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now);
+
+          gain.gain.setValueAtTime(0, now);
+          gain.gain.linearRampToValueAtTime(0.22, now + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.5);
+        });
+      }
+    }
+
+    const sound = new FarmSound();
+
+    /* =========================================================
+       3. 核心互動邏輯
+       ========================================================= */
+    // 選擇不同經驗值的飼料
+    function selectFood(type, exp, btnElement) {
+      document.querySelectorAll('.feed-btn').forEach(btn => btn.classList.remove('selected'));
+      btnElement.classList.add('selected');
+
+      const icons = { grass: '🌿', corn: '🌽', clover: '🍀' };
+      state.activeFood = { type, exp, icon: icons[type] };
+      sound.playEat();
+    }
+
+    // 餵食動物
+    function feedAnimal(animalKey) {
+      sound.playEat();
+      const animal = state.animals[animalKey];
+      const pod = document.getElementById(`pod-${animalKey}`);
+
+      // 累計全場餵食數
+      state.totalFeeds++;
+      document.getElementById('total-feeds').textContent = state.totalFeeds;
+
+      // 咀嚼震顫動畫
+      pod.classList.remove('chewing');
+      void pod.offsetWidth; // 強制重繪觸發動畫
+      pod.classList.add('chewing');
+
+      // 冒出飄浮飼料與經驗值
+      createFloatingExp(pod, `+${state.activeFood.exp} ${state.activeFood.icon}`);
+
+      // 經驗值增長
+      animal.exp += state.activeFood.exp;
+      
+      // 升級檢測
+      let leveledUp = false;
+      while (animal.exp >= animal.maxExp) {
+        animal.exp -= animal.maxExp;
+        animal.level++;
+        animal.maxExp = Math.floor(animal.maxExp * 1.5);
+        leveledUp = true;
+      }
+
+      if (leveledUp) {
+        triggerLevelUp(animalKey);
+      } else {
+        // 隨機觸發一句溫暖對話
+        showDialogue(animalKey, animal.dialogues[Math.floor(Math.random() * animal.dialogues.length)]);
+      }
+
+      updateUI(animalKey);
+    }
+
+    // 升級專屬慶祝特效
+    function triggerLevelUp(animalKey) {
+      sound.playLevelUp();
+      const animal = state.animals[animalKey];
+      const pod = document.getElementById(`pod-${animalKey}`);
+
+      showDialogue(animalKey, `🎉 升級成 Lv.${animal.level}！解鎖新成就！`);
+      spawnConfetti(pod);
+
+      // 達到第 2 級以上時，自動佩戴專屬可愛飾品
+      if (animal.level >= 2) {
+        const acc = document.getElementById(`${animalKey}-acc`);
+        if (acc) acc.classList.add('unlocked');
+      }
+
+      pod.classList.add('level-up');
+      setTimeout(() => pod.classList.remove('level-up'), 1500);
+    }
+
+    // 更新畫面數值與進度條
+    function updateUI(animalKey) {
+      const animal = state.animals[animalKey];
+      const bar = document.getElementById(`${animalKey}-bar`);
+      const lvl = document.getElementById(`${animalKey}-lvl`);
+      const txt = document.getElementById(`${animalKey}-exp-txt`);
+
+      lvl.textContent = `Lv. ${animal.level}`;
+      txt.textContent = `${animal.exp} / ${animal.maxExp} EXP`;
+
+      const pct = Math.min(100, Math.floor((animal.exp / animal.maxExp) * 100));
+      bar.style.width = `${pct}%`;
+    }
+
+    // 飄出 +EXP 提示文字
+    function createFloatingExp(pod, text) {
+      const floatEl = document.createElement('div');
+      floatEl.className = 'floating-item';
+      floatEl.textContent = text;
+      floatEl.style.left = '50%';
+      floatEl.style.top = '30%';
+      pod.appendChild(floatEl);
+
+      setTimeout(() => floatEl.remove(), 950);
+    }
+
+    // 對話氣泡控制
+    let bubbleTimers = {};
+    function showDialogue(animalKey, text) {
+      const bubble = document.getElementById(`bubble-${animalKey}`);
+      bubble.textContent = text;
+      bubble.classList.add('active');
+
+      if (bubbleTimers[animalKey]) clearTimeout(bubbleTimers[animalKey]);
+      bubbleTimers[animalKey] = setTimeout(() => {
+        bubble.classList.remove('active');
+      }, 2600);
+    }
+
+    // 發射彩帶紙屑
+    function spawnConfetti(pod) {
+      const colors = ['#f44336', '#e91e63', '#9c27b0', '#ffeb3b', '#4caf50', '#00bcd4', '#ff9800'];
+      const rect = pod.getBoundingClientRect();
+
+      for (let i = 0; i < 28; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.left = `${rect.left + rect.width / 2 + (Math.random() * 80 - 40)}px`;
+        confetti.style.top = `${rect.top + 40}px`;
+        confetti.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        confetti.style.transform = `scale(${Math.random() * 0.8 + 0.6})`;
+
+        document.body.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 1400);
+      }
+    }
+
+    // 初始化牧場小草裝飾
+    function initGrassTufts() {
+      const pasture = document.querySelector('.pasture');
+      for (let i = 0; i < 25; i++) {
+        const grass = document.createElement('div');
+        grass.className = 'grass-tuft';
+        grass.style.left = `${Math.random() * 96 + 2}%`;
+        grass.style.top = `${Math.random() * 70 + 20}%`;
+        grass.style.transform = `scale(${Math.random() * 0.7 + 0.7})`;
+        pasture.appendChild(grass);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      initGrassTufts();
+      updateUI('cow');
+      updateUI('chicken');
+      updateUI('sheep');
+    });
+  </script>
+</body>
+</html>
